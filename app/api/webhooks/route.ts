@@ -32,7 +32,7 @@ async function handleMembershipActivated(membership: any) {
 		console.log("[MEMBERSHIP ACTIVATED]", membership);
 
 		// Extract company ID from membership data
-		const companyId = membership.company?.id;
+		const companyId = membership.metadata?.companyId;
 		if (!companyId) {
 			console.error("[MEMBERSHIP ACTIVATED] Missing company.id in membership data");
 			return;
@@ -88,7 +88,7 @@ async function handleMembershipDeactivated(membership: any) {
 		console.log("[MEMBERSHIP DEACTIVATED]", membership);
 
 		// Extract company ID from membership data
-		const companyId = membership.company?.id;
+		const companyId = membership.metadata?.companyId;
 		if (!companyId) {
 			console.error("[MEMBERSHIP DEACTIVATED] Missing company.id in membership data");
 			return;
