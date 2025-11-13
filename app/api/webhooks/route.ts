@@ -7,6 +7,7 @@ import { updateSubscriptionStatus } from "@/app/action/subscription";
 
 export async function POST(request: NextRequest): Promise<Response> {
 	// Validate the webhook to ensure it's from Whop
+	console.log("[WEBHOOK RECEIVED]", request);
 	const requestBodyText = await request.text();
 	const headers = Object.fromEntries(request.headers);
 	const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
