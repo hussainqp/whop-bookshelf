@@ -10,7 +10,8 @@ export async function POST(request: NextRequest): Promise<Response> {
 	console.log("[WEBHOOK RECEIVED]", request);
 	const requestBodyText = await request.text();
 	const headers = Object.fromEntries(request.headers);
-	const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
+	const webhookData = JSON.parse(requestBodyText) as UnwrapWebhookEvent;
+	// const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
 
 	// Handle the webhook event
 	if (webhookData.type === "payment.succeeded") {
