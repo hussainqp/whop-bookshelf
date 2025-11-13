@@ -117,14 +117,15 @@ export async function createSubscriptionCheckout(
 		
 		// Create a recurring monthly subscription plan
 		const checkoutConfiguration = await whopsdk.checkoutConfigurations.create({
-			plan: {
-				company_id: companyId,
-				currency: currency.toLowerCase() as Currency,
-				plan_type: "renewal",
-				billing_period: 30,
-				product_id: "prod_3i3cfankxb2uI",
-				renewal_price: price, // Monthly subscription
-			},
+			// plan: {
+			// 	company_id: companyId,
+			// 	currency: currency.toLowerCase() as Currency,
+			// 	plan_type: "renewal",
+			// 	billing_period: 30,
+			// 	product_id: "prod_3i3cfankxb2uI",
+			// 	renewal_price: price, // Monthly subscription
+			// },
+			plan_id: "plan_8ezHAwYoKKNSn",
 			metadata: {
 				companyId: companyId,
 				userId: userId,
