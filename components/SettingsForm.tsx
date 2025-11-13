@@ -23,19 +23,16 @@ const dummyBooks: Book[] = [
 	{
 		id: "preview-1",
 		title: "Sample Book 1",
-		subtitle: "A Preview Book",
 		coverImage: "https://via.placeholder.com/200x300/4A90E2/FFFFFF?text=Book+1",
 	},
 	{
 		id: "preview-2",
 		title: "Sample Book 2",
-		subtitle: "Another Preview",
 		coverImage: "https://via.placeholder.com/200x300/E94B3C/FFFFFF?text=Book+2",
 	},
 	{
 		id: "preview-3",
 		title: "Sample Book 3",
-		subtitle: "Preview Title",
 		coverImage: "https://via.placeholder.com/200x300/50C878/FFFFFF?text=Book+3",
 	},
 ];

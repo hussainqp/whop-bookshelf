@@ -173,7 +173,7 @@ export default function EditBookModal({
 						<Textarea
 							id="edit-description"
 							value={formData.description}
-							onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
 							rows={4}
 							className="bg-gray-a2 border-gray-a4"
 						/>
@@ -251,7 +251,7 @@ export default function EditBookModal({
 						<Button
 							type="button"
 							variant="ghost"
-							size="5"
+							size="4"
 							onClick={onClose}
 							disabled={isSubmitting}
 							style={{
@@ -268,7 +268,7 @@ export default function EditBookModal({
 						<Button
 							type="submit"
 							variant="classic"
-							size="5"
+							size="4"
 							disabled={isSubmitting}
 							style={{
 								backgroundColor: '#2563eb',
