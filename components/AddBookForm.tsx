@@ -1,0 +1,557 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Button } from "@whop/react/components";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { createBook } from "@/app/action/books";
+import { checkCanCreateBook, checkSubscriptionStatus } from "@/app/action/subscription";
+import { useRouter } from "next/navigation";
+import SubscriptionModal from "./SubscriptionModal";
+
+interface AddBookFormProps {
+	companyId: string;
+}
+
+export default function AddBookForm({ companyId }: AddBookFormProps) {
+	const router = useRouter();
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [showAdvanced, setShowAdvanced] = useState(false);
+	const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+	const [canCreate, setCanCreate] = useState<boolean | null>(null);
+	const [isFreeUser, setIsFreeUser] = useState<boolean | null>(null);
+	const [formData, setFormData] = useState({
+		title: "",
+		subtitle: "",
+		description: "",
+		isBehindPaywall: false,
+		price: "",
+		currency: "USD",
+		allowDownload: true,
+		showFullScreen: true,
+		showShareButton: true,
+		showPrevNextButtons: true,
+	});
+
+	const [pdfFile, setPdfFile] = useState<File | null>(null);
+
+	// Check subscription status on mount
+	useEffect(() => {
+		checkCanCreateBook(companyId)
+			.then((result) => {
+				setCanCreate(result.canCreate);
+				if (!result.canCreate && result.requiresSubscription) {
+					setShowSubscriptionModal(true);
+				}
+			})
+			.catch((err) => {
+				console.error("Error checking subscription:", err);
+				setError("Failed to check subscription status");
+			});
+		
+		// Check if user is on free plan
+		checkSubscriptionStatus(companyId)
+			.then((status) => {
+				setIsFreeUser(!status.hasActiveSubscription);
+			})
+			.catch((err) => {
+				console.error("Error checking subscription status:", err);
+			});
+	}, [companyId]);
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			if (file.type !== "application/pdf") {
+				setError("Please upload a PDF file");
+				return;
+			}
+			setPdfFile(file);
+			setError(null);
+			// Auto-fill title if empty
+			if (!formData.title) {
+				const fileName = file.name.replace(/\.[^/.]+$/, "");
+				setFormData((prev) => ({ ...prev, title: fileName }));
+			}
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setError(null);
+
+		// Check subscription status before submitting
+		const canCreateResult = await checkCanCreateBook(companyId);
+		if (!canCreateResult.canCreate) {
+			if (canCreateResult.requiresSubscription) {
+				setShowSubscriptionModal(true);
+			} else {
+				const errorMessage = (canCreateResult as { reason: string | null }).reason || "Cannot create book";
+				setError(errorMessage);
+			}
+			return;
+		}
+
+		if (!pdfFile) {
+			setError("Please select a PDF file");
+			return;
+		}
+
+		if (!formData.title.trim()) {
+			setError("Title is required");
+			return;
+		}
+
+		if (formData.isBehindPaywall) {
+			if (!formData.price || parseFloat(formData.price) <= 0) {
+				setError("Please enter a valid price");
+				return;
+			}
+			if (!formData.currency) {
+				setError("Please select a currency");
+				return;
+			}
+		}
+
+		setIsSubmitting(true);
+
+		try {
+			const result = await createBook({
+				companyId,
+				pdfFile,
+				fileName: pdfFile.name,
+				title: formData.title.trim() || undefined,
+				subtitle: formData.subtitle.trim() || undefined,
+				description: formData.description.trim() || undefined,
+				isBehindPaywall: formData.isBehindPaywall,
+				price: formData.isBehindPaywall && formData.price ? parseFloat(formData.price) : undefined,
+				currency: formData.isBehindPaywall && formData.currency ? formData.currency : undefined,
+				allowDownload: formData.allowDownload,
+				showFullScreen: formData.showFullScreen,
+				showShareButton: formData.showShareButton,
+				showPrevNextButtons: formData.showPrevNextButtons,
+			});
+
+			if (result.success) {
+				// Redirect to books list
+				router.push(`/dashboard/${companyId}`);
+				router.refresh();
+			}
+		} catch (err) {
+			console.error("Error creating book:", err);
+			const errorMessage = err instanceof Error ? err.message : "Failed to create book";
+			setError(errorMessage);
+			
+			// If error is about subscription, show modal
+			if (errorMessage.includes("subscription") || errorMessage.includes("Subscription")) {
+				setShowSubscriptionModal(true);
+			}
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const handleSubscriptionSuccess = async () => {
+		// Refresh subscription status
+		const result = await checkCanCreateBook(companyId);
+		setCanCreate(result.canCreate);
+		setShowSubscriptionModal(false);
+		
+		// Refresh free user status
+		const status = await checkSubscriptionStatus(companyId);
+		setIsFreeUser(!status.hasActiveSubscription);
+		
+		router.refresh();
+	};
+
+	// Show loading state while checking subscription
+	if (canCreate === null) {
+		return (
+			<div className="flex items-center justify-center py-12">
+				<p className="text-gray-11">Checking subscription status...</p>
+			</div>
+		);
+	}
+
+	// If user cannot create book and needs subscription, show only the modal
+	if (canCreate === false) {
+		return (
+			<>
+				<SubscriptionModal
+					isOpen={showSubscriptionModal}
+					onClose={() => setShowSubscriptionModal(false)}
+					companyId={companyId}
+					onPurchaseSuccess={handleSubscriptionSuccess}
+				/>
+				{!showSubscriptionModal && (
+					<div className="flex items-center justify-center py-12">
+						<Button
+							variant="classic"
+							size="4"
+							onClick={() => setShowSubscriptionModal(true)}
+							style={{
+								backgroundColor: '#2563eb',
+								border: 'none',
+								color: '#ffffff',
+							}}
+							onMouseEnter={(e) => {
+								e.currentTarget.style.backgroundColor = '#1d4ed8';
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.backgroundColor = '#2563eb';
+							}}
+						>
+							Subscribe to Add Books
+						</Button>
+					</div>
+				)}
+			</>
+		);
+	}
+
+	return (
+		<>
+			<SubscriptionModal
+				isOpen={showSubscriptionModal}
+				onClose={() => setShowSubscriptionModal(false)}
+				companyId={companyId}
+				onPurchaseSuccess={handleSubscriptionSuccess}
+			/>
+			<form onSubmit={handleSubmit} className="space-y-6">
+			{/* Free Plan Tip Banner */}
+			{isFreeUser && (
+				<div className="rounded-lg border border-blue-a4 bg-blue-a2 p-4 backdrop-blur-sm">
+					<div className="flex items-start gap-3">
+						<div className="shrink-0 mt-0.5">
+							<svg className="h-5 w-5 text-blue-11" fill="currentColor" viewBox="0 0 20 20">
+								<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+							</svg>
+						</div>
+						<div className="flex-1">
+							<p className="text-4 text-blue-11 mb-2">
+								<strong>Free Plan:</strong> You can add 1 book for free. Subscribe to add unlimited books to your bookshelf.
+							</p>
+							<Button
+								type="button"
+								variant="classic"
+								size="3"
+								onClick={() => setShowSubscriptionModal(true)}
+								style={{
+									backgroundColor: '#2563eb',
+									border: 'none',
+									color: '#ffffff',
+									padding: '0.5rem 1rem',
+									fontSize: '0.875rem',
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.backgroundColor = '#1d4ed8';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.backgroundColor = '#2563eb';
+								}}
+							>
+								Subscribe for Unlimited
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
+			{/* PDF File Upload */}
+			<div className="space-y-2">
+				<Label htmlFor="pdf-file" className="text-gray-12">
+					PDF File <span className="text-red-9">*</span>
+				</Label>
+				<Input
+					id="pdf-file"
+					type="file"
+					accept=".pdf,application/pdf"
+					onChange={handleFileChange}
+					required
+					disabled={isSubmitting}
+					className="cursor-pointer"
+				/>
+				{pdfFile && (
+					<p className="text-3 text-gray-10">
+						Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
+					</p>
+				)}
+			</div>
+
+			{/* Title */}
+			<div className="space-y-2">
+				<Label htmlFor="title" className="text-gray-12">
+					Title <span className="text-red-9">*</span>
+				</Label>
+				<Input
+					id="title"
+					type="text"
+					placeholder="Enter book title"
+					value={formData.title}
+					onChange={(e) =>
+						setFormData((prev) => ({ ...prev, title: e.target.value }))
+					}
+					required
+					disabled={isSubmitting}
+				/>
+			</div>
+
+			{/* Subtitle */}
+			<div className="space-y-2">
+				<Label htmlFor="subtitle" className="text-gray-12">
+					Subtitle
+				</Label>
+				<Input
+					id="subtitle"
+					type="text"
+					placeholder="Enter book subtitle (optional)"
+					value={formData.subtitle}
+					onChange={(e) =>
+						setFormData((prev) => ({ ...prev, subtitle: e.target.value }))
+					}
+					disabled={isSubmitting}
+				/>
+			</div>
+
+			{/* Description */}
+			<div className="space-y-2">
+				<Label htmlFor="description" className="text-gray-12">
+					Description
+				</Label>
+				<textarea
+					id="description"
+					placeholder="Enter book description (optional)"
+					value={formData.description}
+					onChange={(e) =>
+						setFormData((prev) => ({ ...prev, description: e.target.value }))
+					}
+					disabled={isSubmitting}
+					rows={4}
+					className="flex w-full rounded-md border border-gray-a4 bg-gray-a2 px-3 py-2 text-sm placeholder:text-gray-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+				/>
+			</div>
+
+			{/* Paywall */}
+			<div className="space-y-4 border-t border-gray-a4 pt-4">
+				<div className="flex items-center justify-between">
+					<div className="space-y-0.5">
+						<Label htmlFor="isBehindPaywall" className="text-gray-12">
+							Behind Paywall
+						</Label>
+						<p className="text-2 text-gray-10">
+							Require users to have access before viewing this book
+						</p>
+					</div>
+					<Switch
+						id="isBehindPaywall"
+						checked={formData.isBehindPaywall}
+						onCheckedChange={(checked) =>
+							setFormData((prev) => ({ ...prev, isBehindPaywall: checked }))
+						}
+						disabled={isSubmitting}
+					/>
+				</div>
+
+				{/* Price and Currency - shown when paywall is enabled */}
+				{formData.isBehindPaywall && (
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-2">
+						<div className="space-y-2">
+							<Label htmlFor="price" className="text-gray-12">
+								Price <span className="text-red-9">*</span>
+							</Label>
+							<Input
+								id="price"
+								type="number"
+								step="0.01"
+								min="0"
+								placeholder="0.00"
+								value={formData.price}
+								onChange={(e) =>
+									setFormData((prev) => ({ ...prev, price: e.target.value }))
+								}
+								required={formData.isBehindPaywall}
+								disabled={isSubmitting}
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="currency" className="text-gray-12">
+								Currency <span className="text-red-9">*</span>
+							</Label>
+							<select
+								id="currency"
+								value={formData.currency}
+								onChange={(e) =>
+									setFormData((prev) => ({ ...prev, currency: e.target.value }))
+								}
+								required={formData.isBehindPaywall}
+								disabled={isSubmitting}
+								className="flex h-10 w-full rounded-md border border-gray-a4 bg-gray-a2 px-3 py-2 text-sm text-gray-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								<option value="USD">USD ($)</option>
+								<option value="EUR">EUR (€)</option>
+								<option value="GBP">GBP (£)</option>
+								<option value="CAD">CAD (C$)</option>
+								<option value="AUD">AUD (A$)</option>
+								<option value="JPY">JPY (¥)</option>
+								<option value="INR">INR (₹)</option>
+								<option value="CHF">CHF</option>
+								<option value="CNY">CNY (¥)</option>
+								<option value="MXN">MXN ($)</option>
+							</select>
+						</div>
+					</div>
+				)}
+			</div>
+
+			{/* Advanced Settings */}
+			<div className="space-y-4 border-t border-gray-a4 pt-6">
+				<button
+					type="button"
+					onClick={() => setShowAdvanced(!showAdvanced)}
+					className="flex items-center justify-between w-full text-left"
+					disabled={isSubmitting}
+				>
+					<Label className="text-gray-12 font-semibold cursor-pointer">
+						Advanced Settings
+					</Label>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className={`h-5 w-5 text-gray-10 transition-transform ${
+							showAdvanced ? "rotate-180" : ""
+						}`}
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M19 9l-7 7-7-7"
+						/>
+					</svg>
+				</button>
+
+				{showAdvanced && (
+					<div className="space-y-4 pl-2">
+						{/* Allow Download */}
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<Label htmlFor="allowDownload" className="text-gray-12">
+									Allow PDF Download
+								</Label>
+								<p className="text-2 text-gray-10">
+									Allow users to download the original PDF file
+								</p>
+							</div>
+							<Switch
+								id="allowDownload"
+								checked={formData.allowDownload}
+								onCheckedChange={(checked) =>
+									setFormData((prev) => ({ ...prev, allowDownload: checked }))
+								}
+								disabled={isSubmitting}
+							/>
+						</div>
+
+						{/* Show Fullscreen Button */}
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<Label htmlFor="showFullScreen" className="text-gray-12">
+									Show Fullscreen Button
+								</Label>
+								<p className="text-2 text-gray-10">
+									Display the fullscreen button on the flipbook
+								</p>
+							</div>
+							<Switch
+								id="showFullScreen"
+								checked={formData.showFullScreen}
+								onCheckedChange={(checked) =>
+									setFormData((prev) => ({ ...prev, showFullScreen: checked }))
+								}
+								disabled={isSubmitting}
+							/>
+						</div>
+
+						{/* Show Share Button */}
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<Label htmlFor="showShareButton" className="text-gray-12">
+									Show Share Button
+								</Label>
+								<p className="text-2 text-gray-10">
+									Display the share button on the flipbook
+								</p>
+							</div>
+							<Switch
+								id="showShareButton"
+								checked={formData.showShareButton}
+								onCheckedChange={(checked) =>
+									setFormData((prev) => ({ ...prev, showShareButton: checked }))
+								}
+								disabled={isSubmitting}
+							/>
+						</div>
+
+						{/* Show Previous/Next Buttons */}
+						<div className="flex items-center justify-between">
+							<div className="space-y-0.5">
+								<Label htmlFor="showPrevNextButtons" className="text-gray-12">
+									Show Previous/Next Buttons
+								</Label>
+								<p className="text-2 text-gray-10">
+									Display navigation buttons to move between pages
+								</p>
+							</div>
+							<Switch
+								id="showPrevNextButtons"
+								checked={formData.showPrevNextButtons}
+								onCheckedChange={(checked) =>
+									setFormData((prev) => ({
+										...prev,
+										showPrevNextButtons: checked,
+									}))
+								}
+								disabled={isSubmitting}
+							/>
+						</div>
+					</div>
+				)}
+			</div>
+
+			{/* Error Message */}
+			{error && (
+				<div className="rounded-lg border border-red-a4 bg-red-a2 p-4">
+					<p className="text-sm text-red-11">{error}</p>
+				</div>
+			)}
+
+			{/* Submit Button */}
+			<div className="flex gap-4">
+				<Button
+					type="submit"
+					variant="classic"
+					size="4"
+					disabled={isSubmitting}
+					className="w-full sm:w-auto"
+				>
+					{isSubmitting ? "Creating Book..." : "Add Book"}
+				</Button>
+				<Button
+					type="button"
+					variant="ghost"
+					size="4"
+					onClick={() => router.push(`/dashboard/${companyId}`)}
+					disabled={isSubmitting}
+					className="w-full sm:w-auto"
+				>
+					Cancel
+				</Button>
+			</div>
+		</form>
+		</>
+	);
+}
+

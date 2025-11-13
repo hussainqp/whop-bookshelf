@@ -42,6 +42,21 @@ const sampleBooks: Book[] = [
 		title: "JOURNEY NO.3",
 		coverGradient: "135deg, #059669 0%, #047857 50%, #065f46 100%",
 	},
+	{
+		id: "9",
+		title: "PORTFOLIO CONTENT CREATOR",
+		coverGradient: "135deg, #a855f7 0%, #9333ea 50%, #7e22ce 100%",
+	},
+	{
+		id: "10",
+		title: "FASHION FIND YOUR STYLE",
+		coverGradient: "135deg, #f97316 0%, #fb923c 50%, #fdba74 100%",
+	},
+	{
+		id: "11",
+		title: "JOURNEY NO.3",
+		coverGradient: "135deg, #059669 0%, #047857 50%, #065f46 100%",
+	},
 ];
 
 export default function DiscoverPage() {

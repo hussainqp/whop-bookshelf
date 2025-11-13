@@ -8,11 +8,16 @@ export interface Book {
 	coverImage?: string;
 	coverColor?: string;
 	coverGradient?: string;
+	flipbookUrl?: string;
+	isBehindPaywall?: boolean;
+	price?: number;
+	currency?: string;
 }
 
 interface BookshelfProps {
 	books: Book[];
 	shelfImage?: string;
+	onBookClick?: (book: Book) => void;
 }
 
 function useBooksPerShelf() {
@@ -52,6 +57,7 @@ function useBooksPerShelf() {
 export default function Bookshelf({
 	books,
 	shelfImage = "/shelf-background.png.png",
+	onBookClick,
 }: BookshelfProps) {
 	const booksPerShelf = useBooksPerShelf();
 
@@ -62,7 +68,7 @@ export default function Bookshelf({
 	}
 
 	return (
-		<div className="w-full p-4 sm:p-6 md:p-8 lg:p-12 bg-white rounded-2xl">
+		<div className="w-full p-4 sm:p-6 md:p-8 lg:p-12 rounded-2xl">
 			<div className="space-y-0">
 				{shelves.map((shelfBooks, shelfIndex) => (
 					<div
@@ -78,7 +84,7 @@ export default function Bookshelf({
 						{/* Books on shelf */}
 						<div className="flex gap-2 sm:gap-4 md:gap-6 lg:gap-8 justify-center items-end pb-2 sm:pb-3 md:pb-4 flex-wrap">
 							{shelfBooks.map((book) => (
-								<BookItem key={book.id} book={book} />
+								<BookItem key={book.id} book={book} onBookClick={onBookClick} />
 							))}
 						</div>
 					</div>
@@ -88,7 +94,7 @@ export default function Bookshelf({
 	);
 }
 
-function BookItem({ book }: { book: Book }) {
+function BookItem({ book, onBookClick }: { book: Book; onBookClick?: (book: Book) => void }) {
 	const coverStyle: React.CSSProperties = {
 		backgroundImage: book.coverImage
 			? `url(${book.coverImage})`
@@ -100,6 +106,14 @@ function BookItem({ book }: { book: Book }) {
 		backgroundPosition: "center",
 	};
 
+	const isClickable = book.flipbookUrl && onBookClick;
+
+	const handleClick = () => {
+		if (isClickable) {
+			onBookClick(book);
+		}
+	};
+
 	return (
 		<div className="relative group">
 			{/* Book shadow - positioned on the shelf floor */}
@@ -107,17 +121,42 @@ function BookItem({ book }: { book: Book }) {
 
 			{/* Book cover with 3D perspective */}
 			<div
-				className="relative w-20 h-32 sm:w-24 sm:h-36 md:w-28 md:h-44 lg:w-36 lg:h-52 rounded-sm shadow-2xl transition-transform duration-300 hover:scale-105"
+				className={`relative w-20 h-32 sm:w-24 sm:h-36 md:w-28 md:h-44 lg:w-36 lg:h-52 rounded-sm shadow-2xl transition-transform duration-300 ${
+					isClickable ? "hover:scale-110 cursor-pointer" : "hover:scale-105"
+				}`}
 				style={{
 					transform: "perspective(1200px) rotateY(-6deg) rotateX(2deg)",
 					transformStyle: "preserve-3d",
 				}}
+				onClick={handleClick}
 			>
 				{/* Book cover */}
 				<div
 					className="w-full h-full rounded-sm overflow-hidden relative border border-black/10"
 					style={coverStyle}
 				>
+					{/* Paid label */}
+					{book.isBehindPaywall && (
+						<div className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 md:top-2 md:right-2 z-10">
+							<span
+								className="inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md shadow-lg"
+								style={{
+									backgroundColor: '#2563eb',
+									border: '1px solid rgba(96, 165, 250, 0.7)',
+									backdropFilter: 'blur(4px)',
+								}}
+							>
+								<span
+									className="text-[6px] sm:text-[7px] md:text-[8px] lg:text-[10px] font-bold uppercase tracking-wider drop-shadow-md"
+									style={{
+										color: '#ffffff',
+									}}
+								>
+									Paid
+								</span>
+							</span>
+						</div>
+					)}
 					{/* Book title overlay with gradient for readability */}
 					<div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent" />
 					<div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2 md:p-3 lg:p-4">
