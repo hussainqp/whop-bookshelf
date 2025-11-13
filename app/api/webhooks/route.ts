@@ -1,5 +1,5 @@
 import { waitUntil } from "@vercel/functions";
-import type { Payment } from "@whop/sdk/resources.js";
+import type { Payment, UnwrapWebhookEvent } from "@whop/sdk/resources.js";
 import type { NextRequest } from "next/server";
 import { whopsdk } from "@/lib/whop-sdk";
 import { grantBookAccess } from "@/app/action/books";
@@ -10,9 +10,9 @@ export async function POST(request: NextRequest): Promise<Response> {
 	console.log("[WEBHOOK RECEIVED]", request);
 	const requestBodyText = await request.text();
 	const headers = Object.fromEntries(request.headers);
-	const webhookData = JSON.parse(requestBodyText) as UnwrapWebhookEvent;
+	const webhookData = JSON.parse(requestBodyText);
 	// const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
-
+	console.log("[WEBHOOK DATA]", webhookData);
 	// Handle the webhook event
 	if (webhookData.type === "payment.succeeded") {
 		waitUntil(handlePaymentSucceeded(webhookData.data));
