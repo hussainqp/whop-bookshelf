@@ -7,6 +7,16 @@ export const PREDEFINED_SHELF_IMAGES = [
 		name: "Default Shelf",
 		url: "/shelf-background.png.png",
 	},
+	{
+		id: "shelf-wood",
+		name: "Wood Shelf",
+		url: "/wooden-shelf.png",
+	},
+	{
+		id: "shelf-glass",
+		name: "Glass Shelf",
+		url: "/glass-shelf.png",
+	},
 	// Add more shelf images here as they are added to the public folder
 	// Example:
 	// {
