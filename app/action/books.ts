@@ -221,6 +221,12 @@ export async function createBook({
 		// Verify user has access to company
 		await verifyUser(companyId);
 		
+		// Validate file size (50MB = 50 * 1024 * 1024 bytes)
+		const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+		if (pdfFile.size > maxSize) {
+			throw new Error("File size must be 50MB or less");
+		}
+		
 		// Check if company can create a book (subscription check)
 		const canCreate = await checkCanCreateBook(companyId);
 		if (!canCreate.canCreate) {

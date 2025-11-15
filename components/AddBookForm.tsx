@@ -68,6 +68,12 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 				setError("Please upload a PDF file");
 				return;
 			}
+			// Check file size (50MB = 50 * 1024 * 1024 bytes)
+			const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+			if (file.size > maxSize) {
+				setError("File size must be 50MB or less");
+				return;
+			}
 			setPdfFile(file);
 			setError(null);
 			// Auto-fill title if empty
@@ -96,6 +102,13 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 
 		if (!pdfFile) {
 			setError("Please select a PDF file");
+			return;
+		}
+
+		// Validate file size (50MB = 50 * 1024 * 1024 bytes)
+		const maxSize = 50 * 1024 * 1024; // 50MB in bytes
+		if (pdfFile.size > maxSize) {
+			setError("File size must be 50MB or less");
 			return;
 		}
 
@@ -272,6 +285,9 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 					disabled={isSubmitting}
 					className="cursor-pointer"
 				/>
+				<p className="text-3 text-gray-10">
+					Maximum file size: 50MB
+				</p>
 				{pdfFile && (
 					<p className="text-3 text-gray-10">
 						Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
