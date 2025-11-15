@@ -13,50 +13,47 @@ import { eq, desc, and, count } from "drizzle-orm";
 import { cache } from "react";
 
 
-// Upload PDF to Supabase storage
-async function uploadPdfToSupabase(
-	file: File,
-	companyId: string
-): Promise<{ url: string; path: string }> {
-	
-	
-	// Generate unique filename
-	const timestamp = Date.now();
-	const fileExt = file.name.split('.').pop();
-	const fileName = `${companyId}/${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-	
-	// Convert File to ArrayBuffer
-	const arrayBuffer = await file.arrayBuffer();
-	const fileBuffer = Buffer.from(arrayBuffer);
-	
-	// Upload to Supabase storage bucket (assuming bucket name is 'pdfs')
-	const bucketName = process.env.SUPABASE_BUCKET_NAME || 'pdfs';
-	
-	const { data, error } = await supabase.storage
-		.from(bucketName)
-		.upload(fileName, fileBuffer, {
-			contentType: file.type || 'application/pdf',
-			upsert: false,
-		});
-	
-	if (error) {
-		console.error('[UPLOAD PDF] Error uploading to Supabase:', error);
-		throw new Error(`Failed to upload PDF: ${error.message}`);
+// Generate upload path for direct client-side upload to Supabase
+export async function getUploadPath(companyId: string, fileName: string) {
+	try {
+		await verifyUser(companyId);
+		
+		// Generate unique filename
+		const timestamp = Date.now();
+		const fileExt = fileName.split('.').pop() || 'pdf';
+		const uploadPath = `${companyId}/${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+		
+		return {
+			path: uploadPath,
+			bucketName: process.env.SUPABASE_BUCKET_NAME || 'pdfs',
+		} as const;
+	} catch (err: unknown) {
+		console.error('[GET UPLOAD PATH] Error:', err);
+		throw new Error("Failed to generate upload path");
 	}
-	
-	// Get public URL
-	const { data: urlData } = supabase.storage
-		.from(bucketName)
-		.getPublicUrl(fileName);
-	
-	if (!urlData?.publicUrl) {
-		throw new Error("Failed to get public URL for uploaded PDF");
+}
+
+// Get public URL for an uploaded file
+export async function getPdfPublicUrl(filePath: string) {
+	try {
+		const bucketName = process.env.SUPABASE_BUCKET_NAME || 'pdfs';
+		
+		// Get public URL
+		const { data: urlData } = supabase.storage
+			.from(bucketName)
+			.getPublicUrl(filePath);
+		
+		if (!urlData?.publicUrl) {
+			throw new Error("Failed to get public URL for uploaded PDF");
+		}
+		
+		return {
+			url: urlData.publicUrl,
+		} as const;
+	} catch (err: unknown) {
+		console.error('[GET PDF PUBLIC URL] Error:', err);
+		throw new Error("Failed to get public URL");
 	}
-	
-	return {
-		url: urlData.publicUrl,
-		path: fileName,
-	};
 }
 
 // Call Heyzine API to create flipbook
@@ -190,7 +187,9 @@ export const getAllBooks = cache(async (companyId: string) => {
 
 export async function createBook({
 	companyId,
-	pdfFile,
+	pdfUrl,
+	filePath,
+	fileSizeBytes,
 	fileName,
 	title,
 	subtitle,
@@ -204,7 +203,9 @@ export async function createBook({
 	showPrevNextButtons,
 }: {
 	companyId: string;
-	pdfFile: File;
+	pdfUrl: string; // Public URL of the uploaded PDF
+	filePath: string; // Path in Supabase storage
+	fileSizeBytes: number; // File size in bytes
 	fileName: string;
 	title?: string;
 	subtitle?: string;
@@ -220,12 +221,6 @@ export async function createBook({
 	try {
 		// Verify user has access to company
 		await verifyUser(companyId);
-		
-		// Validate file size (50MB = 50 * 1024 * 1024 bytes)
-		const maxSize = 50 * 1024 * 1024; // 50MB in bytes
-		if (pdfFile.size > maxSize) {
-			throw new Error("File size must be 50MB or less");
-		}
 		
 		// Check if company can create a book (subscription check)
 		const canCreate = await checkCanCreateBook(companyId);
@@ -251,15 +246,6 @@ export async function createBook({
 				throw new Error("Failed to create merchant record");
 			}
 		}
-		
-		// Upload PDF to Supabase
-		const { url: pdfUrl, path: filePath } = await uploadPdfToSupabase(
-			pdfFile,
-			companyId
-		);
-		
-		// Get file size
-		const fileSizeBytes = pdfFile.size;
 		
 		// Call Heyzine API to create flipbook
 		const heyzineResponse = await createHeyzineFlipbook(pdfUrl, {

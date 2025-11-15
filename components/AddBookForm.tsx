@@ -5,10 +5,11 @@ import { Button } from "@whop/react/components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { createBook } from "@/app/action/books";
+import { createBook, getUploadPath, getPdfPublicUrl } from "@/app/action/books";
 import { checkCanCreateBook, checkSubscriptionStatus } from "@/app/action/subscription";
 import { useRouter } from "next/navigation";
 import SubscriptionModal from "./SubscriptionModal";
+import { supabaseClient } from "@/lib/supabase-client";
 
 interface AddBookFormProps {
 	companyId: string;
@@ -62,6 +63,12 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 	}, [companyId]);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// Prevent file changes during upload
+		if (isSubmitting) {
+			e.preventDefault();
+			return;
+		}
+		
 		const file = e.target.files?.[0];
 		if (file) {
 			if (file.type !== "application/pdf") {
@@ -86,6 +93,12 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		
+		// Prevent multiple submissions
+		if (isSubmitting) {
+			return;
+		}
+		
 		setError(null);
 
 		// Check subscription status before submitting
@@ -131,9 +144,30 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 		setIsSubmitting(true);
 
 		try {
+			// Step 1: Get upload path from server
+			const uploadInfo = await getUploadPath(companyId, pdfFile.name);
+			
+			// Step 2: Upload file directly to Supabase from client
+			const { error: uploadError } = await supabaseClient.storage
+				.from(uploadInfo.bucketName)
+				.upload(uploadInfo.path, pdfFile, {
+					contentType: 'application/pdf',
+					upsert: false,
+				});
+
+			if (uploadError) {
+				throw new Error(`Failed to upload PDF: ${uploadError.message}`);
+			}
+
+			// Step 3: Get public URL
+			const { url: pdfUrl } = await getPdfPublicUrl(uploadInfo.path);
+
+			// Step 4: Create book with the uploaded PDF URL
 			const result = await createBook({
 				companyId,
-				pdfFile,
+				pdfUrl,
+				filePath: uploadInfo.path,
+				fileSizeBytes: pdfFile.size,
 				fileName: pdfFile.name,
 				title: formData.title.trim() || undefined,
 				subtitle: formData.subtitle.trim() || undefined,
@@ -617,6 +651,15 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 			{error && (
 				<div className="rounded-lg border border-red-a4 bg-red-a2 p-4">
 					<p className="text-sm text-red-11">{error}</p>
+				</div>
+			)}
+
+			{/* Upload Status Message */}
+			{isSubmitting && (
+				<div className="rounded-lg border border-blue-a4 bg-blue-a2 p-4">
+					<p className="text-sm text-blue-11">
+						Uploading PDF and creating book... Please do not close this page.
+					</p>
 				</div>
 			)}
 
