@@ -109,8 +109,8 @@ export async function checkCanCreateBook(companyId: string) {
 // Create subscription checkout configuration
 export async function createSubscriptionCheckout(
 	companyId: string,
-	price: number = 1,
-	currency: string = "INR"
+	price: number = 9.99,
+	currency: string = "USD"
 ) {
 	try {
 		const headersList = await headers();

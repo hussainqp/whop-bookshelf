@@ -28,13 +28,90 @@ interface EditBookModalProps {
 
 const CURRENCIES = [
 	{ value: "USD", label: "USD ($)" },
-	{ value: "EUR", label: "EUR (€)" },
-	{ value: "GBP", label: "GBP (£)" },
-	{ value: "INR", label: "INR (₹)" },
-	{ value: "JPY", label: "JPY (¥)" },
-	{ value: "CAD", label: "CAD (C$)" },
-	{ value: "AUD", label: "AUD (A$)" },
-	{ value: "SGD", label: "SGD (S$)" },
+{ value: "SGD", label: "SGD (S$)" },
+{ value: "INR", label: "INR (₹)" },
+{ value: "AUD", label: "AUD (A$)" },
+{ value: "BRL", label: "BRL (R$)" },
+{ value: "CAD", label: "CAD (C$)" },
+{ value: "DKK", label: "DKK (kr)" },
+{ value: "EUR", label: "EUR (€)" },
+{ value: "NOK", label: "NOK (kr)" },
+{ value: "GBP", label: "GBP (£)" },
+{ value: "SEK", label: "SEK (kr)" },
+{ value: "CHF", label: "CHF (CHF)" },
+{ value: "HKD", label: "HKD (HK$)" },
+{ value: "HUF", label: "HUF (Ft)" },
+{ value: "JPY", label: "JPY (¥)" },
+{ value: "MXN", label: "MXN (Mex$)" },
+{ value: "MYR", label: "MYR (RM)" },
+{ value: "PLN", label: "PLN (zł)" },
+{ value: "CZK", label: "CZK (Kč)" },
+{ value: "NZD", label: "NZD (NZ$)" },
+{ value: "AED", label: "AED (د.إ)" },
+{ value: "ETH", label: "ETH (Ξ)" },
+{ value: "APE", label: "APE (APE)" },
+{ value: "COP", label: "COP ($)" },
+{ value: "RON", label: "RON (lei)" },
+{ value: "THB", label: "THB (฿)" },
+{ value: "BGN", label: "BGN (лв)" },
+{ value: "IDR", label: "IDR (Rp)" },
+{ value: "DOP", label: "DOP (RD$)" },
+{ value: "PHP", label: "PHP (₱)" },
+{ value: "TRY", label: "TRY (₺)" },
+{ value: "KRW", label: "KRW (₩)" },
+{ value: "TWD", label: "TWD (NT$)" },
+{ value: "VND", label: "VND (₫)" },
+{ value: "PKR", label: "PKR (₨)" },
+{ value: "CLP", label: "CLP ($)" },
+{ value: "UYU", label: "UYU ($U)" },
+{ value: "ARS", label: "ARS ($)" },
+{ value: "ZAR", label: "ZAR (R)" },
+{ value: "DZD", label: "DZD (دج)" },
+{ value: "TND", label: "TND (د.ت)" },
+{ value: "MAD", label: "MAD (DH)" },
+{ value: "KES", label: "KES (KSh)" },
+{ value: "KWD", label: "KWD (KD)" },
+{ value: "JOD", label: "JOD (JD)" },
+{ value: "ALL", label: "ALL (L)" },
+{ value: "XCD", label: "XCD (EC$)" },
+{ value: "AMD", label: "AMD (֏)" },
+{ value: "BSD", label: "BSD (B$)" },
+{ value: "BHD", label: "BHD (BD)" },
+{ value: "BOB", label: "BOB (Bs.)" },
+{ value: "BAM", label: "BAM (KM)" },
+{ value: "KHR", label: "KHR (៛)" },
+{ value: "CRC", label: "CRC (₡)" },
+{ value: "XOF", label: "XOF (CFA)" },
+{ value: "EGP", label: "EGP (£E)" },
+{ value: "ETB", label: "ETB (Br)" },
+{ value: "GMD", label: "GMD (D)" },
+{ value: "GHS", label: "GHS (₵)" },
+{ value: "GTQ", label: "GTQ (Q)" },
+{ value: "GYD", label: "GYD (G$)" },
+{ value: "ILS", label: "ILS (₪)" },
+{ value: "JMD", label: "JMD (J$)" },
+{ value: "MOP", label: "MOP (MOP$)" },
+{ value: "MGA", label: "MGA (Ar)" },
+{ value: "MUR", label: "MUR (₨)" },
+{ value: "MDL", label: "MDL (L)" },
+{ value: "MNT", label: "MNT (₮)" },
+{ value: "NAD", label: "NAD (N$)" },
+{ value: "NGN", label: "NGN (₦)" },
+{ value: "MKD", label: "MKD (ден)" },
+{ value: "OMR", label: "OMR (ر.ع.)" },
+{ value: "PYG", label: "PYG (Gs.)" },
+{ value: "PEN", label: "PEN (S/.)" },
+{ value: "QAR", label: "QAR (ر.ق)" },
+{ value: "RWF", label: "RWF (FRw)" },
+{ value: "SAR", label: "SAR (ر.س)" },
+{ value: "RSD", label: "RSD (din)" },
+{ value: "LKR", label: "LKR (Rs)" },
+{ value: "TZS", label: "TZS (TSh)" },
+{ value: "TTD", label: "TTD (TT$)" },
+{ value: "UZS", label: "UZS (so'm)" },
+{ value: "RUB", label: "RUB (₽)" },
+{ value: "BTC", label: "BTC (₿)" },
+{ value: "CNY", label: "CNY (¥)" }
 ];
 
 export default function EditBookModal({
@@ -129,7 +206,7 @@ export default function EditBookModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-2xl bg-gray-a1 border-gray-a5 max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'rgba(249, 250, 251, 0.95)', backdropFilter: 'blur(12px)' }}>
+			<DialogContent className="max-w-2xl bg-gray-a1 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle className="text-6 font-semibold text-gray-12">
 						Edit Book
@@ -147,7 +224,7 @@ export default function EditBookModal({
 							value={formData.title}
 							onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
 							required
-							className="bg-gray-a2 border-gray-a4"
+							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
 						/>
 					</div>
 
@@ -161,7 +238,7 @@ export default function EditBookModal({
 							type="text"
 							value={formData.subtitle}
 							onChange={(e) => setFormData((prev) => ({ ...prev, subtitle: e.target.value }))}
-							className="bg-gray-a2 border-gray-a4"
+							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
 						/>
 					</div>
 
@@ -175,18 +252,18 @@ export default function EditBookModal({
 							value={formData.description}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
 							rows={4}
-							className="bg-gray-a2 border-gray-a4"
+							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
 						/>
 					</div>
 
 					{/* Behind Paywall Toggle */}
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
 						<input
 							type="checkbox"
 							id="edit-behind-paywall"
 							checked={formData.isBehindPaywall}
 							onChange={(e) => setFormData((prev) => ({ ...prev, isBehindPaywall: e.target.checked }))}
-							className="h-4 w-4 rounded border-gray-a4"
+							className="h-4 w-4 rounded border-gray-a4 accent-gray-a8"
 						/>
 						<Label htmlFor="edit-behind-paywall" className="text-4 text-gray-11 cursor-pointer">
 							Behind Paywall
@@ -208,7 +285,7 @@ export default function EditBookModal({
 									value={formData.price}
 									onChange={(e) => setFormData((prev) => ({ ...prev, price: e.target.value }))}
 									required
-									className="bg-gray-a2 border-gray-a4"
+									className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
 								/>
 							</div>
 							<div>
@@ -220,7 +297,7 @@ export default function EditBookModal({
 									value={formData.currency}
 									onChange={(e) => setFormData((prev) => ({ ...prev, currency: e.target.value }))}
 									required
-									className="flex h-10 w-full rounded-md border border-gray-a4 bg-gray-a2 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2"
+									className="flex h-10 w-full rounded-md border border-gray-a4 bg-gray-a2/80 backdrop-blur-sm px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2"
 								>
 									{CURRENCIES.map((curr) => (
 										<option key={curr.value} value={curr.value}>
@@ -234,34 +311,27 @@ export default function EditBookModal({
 
 					{/* Error Message */}
 					{error && (
-						<div className="rounded-lg border border-red-a4 bg-red-a2 p-3">
+						<div className="rounded-lg border border-red-a4 bg-red-a2/80 backdrop-blur-sm p-3">
 							<p className="text-sm text-red-11">{error}</p>
 						</div>
 					)}
 
 					{/* Success Message */}
 					{success && (
-						<div className="rounded-lg border border-green-a4 bg-green-a2 p-3">
+						<div className="rounded-lg border border-green-a4 bg-green-a2/80 backdrop-blur-sm p-3">
 							<p className="text-sm text-green-11">Book updated successfully!</p>
 						</div>
 					)}
 
 					{/* Action Buttons */}
-					<div className="flex gap-3 justify-end">
+					<div className="flex gap-3 justify-end pt-2">
 						<Button
 							type="button"
 							variant="ghost"
 							size="4"
 							onClick={onClose}
 							disabled={isSubmitting}
-							style={{
-								backgroundColor: '#f3f4f6',
-								border: '1px solid #e5e7eb',
-								color: '#111827',
-								padding: '0.75rem 1.5rem',
-								fontSize: '0.9375rem',
-								fontWeight: '500',
-							}}
+							className="bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a3/80"
 						>
 							Cancel
 						</Button>
@@ -270,24 +340,7 @@ export default function EditBookModal({
 							variant="classic"
 							size="4"
 							disabled={isSubmitting}
-							style={{
-								backgroundColor: '#2563eb',
-								border: 'none',
-								color: '#ffffff',
-								padding: '0.75rem 1.5rem',
-								fontSize: '0.9375rem',
-								fontWeight: '500',
-							}}
-							onMouseEnter={(e) => {
-								if (!isSubmitting) {
-									e.currentTarget.style.backgroundColor = '#1d4ed8';
-								}
-							}}
-							onMouseLeave={(e) => {
-								if (!isSubmitting) {
-									e.currentTarget.style.backgroundColor = '#2563eb';
-								}
-							}}
+							className="bg-blue-9 hover:bg-blue-10 text-white"
 						>
 							{isSubmitting ? "Saving..." : "Save Changes"}
 						</Button>

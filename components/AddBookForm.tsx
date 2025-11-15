@@ -135,8 +135,8 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 			});
 
 			if (result.success) {
-				// Redirect to books list
-				router.push(`/dashboard/${companyId}`);
+				// Redirect to books list page
+				router.replace(`/dashboard/${companyId}`);
 				router.refresh();
 			}
 		} catch (err) {
@@ -389,15 +389,91 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 								className="flex h-10 w-full rounded-md border border-gray-a4 bg-gray-a2 px-3 py-2 text-sm text-gray-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<option value="USD">USD ($)</option>
-								<option value="EUR">EUR (€)</option>
-								<option value="GBP">GBP (£)</option>
-								<option value="CAD">CAD (C$)</option>
-								<option value="AUD">AUD (A$)</option>
-								<option value="JPY">JPY (¥)</option>
-								<option value="INR">INR (₹)</option>
-								<option value="CHF">CHF</option>
-								<option value="CNY">CNY (¥)</option>
-								<option value="MXN">MXN ($)</option>
+<option value="SGD">SGD (S$)</option>
+<option value="INR">INR (₹)</option>
+<option value="AUD">AUD (A$)</option>
+<option value="BRL">BRL (R$)</option>
+<option value="CAD">CAD (C$)</option>
+<option value="DKK">DKK (kr)</option>
+<option value="EUR">EUR (€)</option>
+<option value="NOK">NOK (kr)</option>
+<option value="GBP">GBP (£)</option>
+<option value="SEK">SEK (kr)</option>
+<option value="CHF">CHF</option>
+<option value="HKD">HKD (HK$)</option>
+<option value="HUF">HUF (Ft)</option>
+<option value="JPY">JPY (¥)</option>
+<option value="MXN">MXN ($)</option>
+<option value="MYR">MYR (RM)</option>
+<option value="PLN">PLN (zł)</option>
+<option value="CZK">CZK (Kč)</option>
+<option value="NZD">NZD (NZ$)</option>
+<option value="AED">AED (د.إ)</option>
+<option value="ETH">ETH (Ξ)</option>
+<option value="APE">APE (APE)</option>
+<option value="COP">COP ($)</option>
+<option value="RON">RON (lei)</option>
+<option value="THB">THB (฿)</option>
+<option value="BGN">BGN (лв)</option>
+<option value="IDR">IDR (Rp)</option>
+<option value="DOP">DOP (RD$)</option>
+<option value="PHP">PHP (₱)</option>
+<option value="TRY">TRY (₺)</option>
+<option value="KRW">KRW (₩)</option>
+<option value="TWD">TWD (NT$)</option>
+<option value="VND">VND (₫)</option>
+<option value="PKR">PKR (₨)</option>
+<option value="CLP">CLP ($)</option>
+<option value="UYU">UYU ($U)</option>
+<option value="ARS">ARS ($)</option>
+<option value="ZAR">ZAR (R)</option>
+<option value="DZD">DZD (دج)</option>
+<option value="TND">TND (د.ت)</option>
+<option value="MAD">MAD (DH)</option>
+<option value="KES">KES (KSh)</option>
+<option value="KWD">KWD (KD)</option>
+<option value="JOD">JOD (JD)</option>
+<option value="ALL">ALL (L)</option>
+<option value="XCD">XCD (EC$)</option>
+<option value="AMD">AMD (֏)</option>
+<option value="BSD">BSD (B$)</option>
+<option value="BHD">BHD (BD)</option>
+<option value="BOB">BOB (Bs.)</option>
+<option value="BAM">BAM (KM)</option>
+<option value="KHR">KHR (៛)</option>
+<option value="CRC">CRC (₡)</option>
+<option value="XOF">XOF (CFA)</option>
+<option value="EGP">EGP (£E)</option>
+<option value="ETB">ETB (Br)</option>
+<option value="GMD">GMD (D)</option>
+<option value="GHS">GHS (₵)</option>
+<option value="GTQ">GTQ (Q)</option>
+<option value="GYD">GYD (G$)</option>
+<option value="ILS">ILS (₪)</option>
+<option value="JMD">JMD (J$)</option>
+<option value="MOP">MOP (MOP$)</option>
+<option value="MGA">MGA (Ar)</option>
+<option value="MUR">MUR (₨)</option>
+<option value="MDL">MDL (L)</option>
+<option value="MNT">MNT (₮)</option>
+<option value="NAD">NAD (N$)</option>
+<option value="NGN">NGN (₦)</option>
+<option value="MKD">MKD (ден)</option>
+<option value="OMR">OMR (ر.ع.)</option>
+<option value="PYG">PYG (Gs.)</option>
+<option value="PEN">PEN (S/.)</option>
+<option value="QAR">QAR (ر.ق)</option>
+<option value="RWF">RWF (FRw)</option>
+<option value="SAR">SAR (ر.س)</option>
+<option value="RSD">RSD (din)</option>
+<option value="LKR">LKR (Rs)</option>
+<option value="TZS">TZS (TSh)</option>
+<option value="TTD">TTD (TT$)</option>
+<option value="UZS">UZS (so'm)</option>
+<option value="RUB">RUB (₽)</option>
+<option value="BTC">BTC (₿)</option>
+<option value="CNY">CNY (¥)</option>
+
 							</select>
 						</div>
 					</div>
