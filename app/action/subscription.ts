@@ -15,25 +15,30 @@ export const checkSubscriptionStatus = cache(async (companyId: string) => {
 	try {
 		await verifyUser(companyId);
 		
-		const merchant = await getCompanyDataFromDB(companyId);
-		if (!merchant) {
-			return {
-				hasActiveSubscription: false,
-				canAddBook: false,
-				freeBookAvailable: false,
-				bookCount: 0,
-				subscriptionStatus: 'free' as const,
-				subscriptionExpiresAt: null,
-			} as const;
-		}
-		
-		// Count existing books
+		// Count existing books first (even if merchant doesn't exist)
 		const [bookCountResult] = await db
 			.select({ count: count() })
 			.from(flipbooks)
 			.where(eq(flipbooks.companyId, companyId));
 		
 		const bookCount = bookCountResult?.count || 0;
+		
+		const merchant = await getCompanyDataFromDB(companyId);
+		if (!merchant) {
+			// If merchant doesn't exist, check if they can use free book
+			// If no books exist, they can use their free book
+			const freeBookAvailable = bookCount === 0;
+			const canAddBook = freeBookAvailable;
+			
+			return {
+				hasActiveSubscription: false,
+				canAddBook,
+				freeBookAvailable,
+				bookCount,
+				subscriptionStatus: 'free' as const,
+				subscriptionExpiresAt: null,
+			} as const;
+		}
 		
 		// Check subscription status
 		const subscriptionStatus = (merchant.subscriptionStatus as 'free' | 'active' | 'cancelled' | 'expired') || 'free';
