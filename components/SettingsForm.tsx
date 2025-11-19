@@ -14,6 +14,7 @@ import {
 interface SettingsFormProps {
 	companyId: string;
 	initialExperienceTitle?: string | null;
+	initialExperienceTitleColor?: string | null;
 	initialExperienceBackground?: string | null;
 	initialShelfBackgroundImage?: string | null;
 }
@@ -40,6 +41,7 @@ const dummyBooks: Book[] = [
 export default function SettingsForm({
 	companyId,
 	initialExperienceTitle,
+	initialExperienceTitleColor,
 	initialExperienceBackground,
 	initialShelfBackgroundImage,
 }: SettingsFormProps) {
@@ -51,6 +53,11 @@ export default function SettingsForm({
 	// Experience title
 	const [experienceTitle, setExperienceTitle] = useState<string>(
 		initialExperienceTitle || ""
+	);
+
+	// Experience title color
+	const [experienceTitleColor, setExperienceTitleColor] = useState<string>(
+		initialExperienceTitleColor || "#1f2937"
 	);
 
 	// Experience background
@@ -92,12 +99,13 @@ export default function SettingsForm({
 
 		startTransition(async () => {
 			try {
-				const result = await saveSettings({
-					companyId,
-					experienceTitle: experienceTitle || undefined,
-					experienceBackground: experienceBackground || undefined,
-					shelfBackgroundImage: shelfBackgroundImage || undefined,
-				});
+		const result = await saveSettings({
+			companyId,
+			experienceTitle: experienceTitle || undefined,
+			experienceTitleColor: experienceTitleColor || undefined,
+			experienceBackground: experienceBackground || undefined,
+			shelfBackgroundImage: shelfBackgroundImage || undefined,
+		});
 
 				if (result.success) {
 					setSuccess(true);
@@ -133,6 +141,38 @@ export default function SettingsForm({
 							placeholder="Your Bookshelf"
 							className="bg-gray-a1 border-gray-a4"
 						/>
+					</div>
+
+					{/* Experience Title Color */}
+					<div className="space-y-4">
+						<Label htmlFor="experience-title-color" className="text-5 font-semibold text-gray-12">
+							Title Color
+						</Label>
+						<p className="text-3 text-gray-10">
+							Choose a color for the experience page title.
+						</p>
+						<div className="flex gap-2">
+							<Input
+								id="experience-title-color"
+								type="color"
+								value={experienceTitleColor.startsWith("#") ? experienceTitleColor : "#1f2937"}
+								onChange={(e) => setExperienceTitleColor(e.target.value)}
+								className="bg-gray-a1 border-gray-a4 h-10 w-20 cursor-pointer"
+							/>
+							<Input
+								type="text"
+								value={experienceTitleColor.startsWith("#") ? experienceTitleColor : ""}
+								onChange={(e) => {
+									const value = e.target.value;
+									if (value.startsWith("#") || value === "") {
+										setExperienceTitleColor(value || "#1f2937");
+									}
+								}}
+								placeholder="#1f2937"
+								className="bg-gray-a1 border-gray-a4 flex-1"
+								pattern="^#[0-9A-Fa-f]{6}$"
+							/>
+						</div>
 					</div>
 
 					{/* Experience Background */}
@@ -273,6 +313,15 @@ export default function SettingsForm({
 						backgroundRepeat: "no-repeat",
 					}}
 				>
+					{/* Preview Title */}
+					{experienceTitle && (
+						<h2
+							className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-center"
+							style={{ color: experienceTitleColor || "#1f2937" }}
+						>
+							{experienceTitle}
+						</h2>
+					)}
 					<div className="rounded-2xl">
 						<Bookshelf
 							books={dummyBooks}

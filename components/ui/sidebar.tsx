@@ -177,7 +177,7 @@ const Sidebar = React.forwardRef<
 					{/* Mobile Overlay */}
 					{openMobile && (
 						<div
-							className="fixed inset-0 z-50 bg-gray-a1/80 md:hidden"
+							className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
 							onClick={() => setOpenMobile(false)}
 						/>
 					)}
@@ -186,12 +186,11 @@ const Sidebar = React.forwardRef<
 					<div
 						data-state={openMobile ? "open" : "closed"}
 						className={cn(
-							"fixed inset-y-0 z-50 flex h-svh w-[--sidebar-width] flex-col border-r border-gray-a4 text-gray-12 transition-transform duration-200 ease-linear md:hidden",
+							"fixed inset-y-0 z-50 flex h-svh w-[--sidebar-width] flex-col border-r border-gray-a4 text-gray-12 transition-transform duration-200 ease-linear md:hidden bg-gray-a1 backdrop-blur-xl",
 							openMobile ? "translate-x-0" : "-translate-x-full"
 						)}
 						style={{ 
-							backgroundColor: 'rgb(10, 10, 10)',
-							backdropFilter: 'none'
+							backgroundColor: 'rgba(10, 10, 10, 0.95)'
 						}}
 					>
 						{children}
@@ -259,7 +258,7 @@ const Sidebar = React.forwardRef<
 				{/* Mobile Overlay */}
 				{openMobile && (
 					<div
-						className="fixed inset-0 z-50 bg-gray-a1/80 md:hidden"
+						className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden"
 						onClick={() => setOpenMobile(false)}
 					/>
 				)}
@@ -268,12 +267,11 @@ const Sidebar = React.forwardRef<
 				<div
 					data-state={openMobile ? "open" : "closed"}
 					className={cn(
-						"fixed inset-y-0 z-50 flex h-svh w-[--sidebar-width] flex-col border-r border-gray-a4 text-gray-12 transition-transform duration-200 ease-linear md:hidden",
+						"fixed inset-y-0 z-50 flex h-svh w-[--sidebar-width] flex-col border-r border-gray-a4 text-gray-12 transition-transform duration-200 ease-linear md:hidden bg-gray-a1 backdrop-blur-xl",
 						openMobile ? "translate-x-0" : "-translate-x-full"
 					)}
 					style={{ 
-						backgroundColor: 'rgb(10, 10, 10)',
-						backdropFilter: 'none'
+						backgroundColor: 'rgba(10, 10, 10, 0.95)'
 					}}
 				>
 					{children}
@@ -491,7 +489,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-	"peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-gray-a3 hover:text-gray-12 focus-visible:ring-2 active:bg-gray-a4 active:text-gray-12 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-gray-a4 data-[active=true]:font-medium data-[active=true]:text-gray-12 data-[state=open]:hover:bg-gray-a3 group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+	"peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-gray-a3 hover:text-gray-12 focus-visible:ring-2 active:bg-gray-a4 active:text-gray-12 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-gray-a4 data-[active=true]:font-medium data-[active=true]:text-gray-12 data-[state=open]:hover:bg-gray-a3 group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>span:last-child]:min-w-0 [&>svg]:size-4 [&>svg]:shrink-0",
 	{
 		variants: {
 			variant: {

@@ -44,6 +44,7 @@ export default async function ExperiencePage({
 
 	// Get settings from merchant
 	const experienceTitle = merchant?.experienceTitle || "Your Bookshelf";
+	const experienceTitleColor = merchant?.experienceTitleColor || "#1f2937";
 	const experienceBackground = merchant?.experienceBackground || "#ffffff";
 	const shelfBackgroundImage = merchant?.shelfBackgroundImage || "/shelf-background.png.png";
 
@@ -69,14 +70,19 @@ export default async function ExperiencePage({
 		>
 			<div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 sm:py-12 md:py-16">
 				{/* Header with Add Book button for admins */}
-				<div className="flex justify-between items-center mb-6">
-					<h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
+				<div className="relative mb-1">
+					<h1
+						className="text-3xl sm:text-4xl md:text-5xl font-bold text-center"
+						style={{ color: experienceTitleColor }}
+					>
 						{experienceTitle}
 					</h1>
 					{isAdmin && (
-						<Button variant="classic" size="3">
-							Add Book
-						</Button>
+						<div className="absolute right-0 top-1/2 -translate-y-1/2">
+							<Button variant="classic" size="3">
+								Add Book
+							</Button>
+						</div>
 					)}
 				</div>
 

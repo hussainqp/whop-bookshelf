@@ -113,11 +113,13 @@ export const getExperienceDataFromDBPublic = cache(async (experienceId: string) 
 export async function saveSettings({
 	companyId,
 	experienceTitle,
+	experienceTitleColor,
 	experienceBackground,
 	shelfBackgroundImage,
 }: {
 	companyId: string;
 	experienceTitle?: string;
+	experienceTitleColor?: string; // Hex color code
 	experienceBackground?: string; // URL or color
 	shelfBackgroundImage?: string; // URL (from predefined images in public folder)
 }) {
@@ -129,6 +131,7 @@ export async function saveSettings({
 			.update(merchants)
 			.set({
 				experienceTitle: experienceTitle || null,
+				experienceTitleColor: experienceTitleColor || null,
 				experienceBackground: experienceBackground || null,
 				shelfBackgroundImage: shelfBackgroundImage || null,
 			})

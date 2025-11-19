@@ -206,13 +206,32 @@ export default function EditBookModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-2xl bg-gray-a1 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-y-auto">
-				<DialogHeader>
-					<DialogTitle className="text-6 font-semibold text-gray-12">
+			<DialogContent className="max-w-2xl bg-gray-a1/50 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-hidden p-6 [&>button.absolute]:hidden">
+				<DialogHeader className="relative">
+					<DialogTitle className="text-6 font-semibold text-gray-12 pr-8">
 						Edit Book
 					</DialogTitle>
+					<button
+						onClick={onClose}
+						className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 hover:text-gray-12 shrink-0"
+						aria-label="Close"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-5 w-5"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
+						</svg>
+					</button>
 				</DialogHeader>
-				<form onSubmit={handleSubmit} className="space-y-6 py-4">
+				<form onSubmit={handleSubmit} className="space-y-4 py-4">
 					{/* Title */}
 					<div>
 						<Label htmlFor="edit-title" className="text-4 text-gray-11 mb-2 block">
@@ -251,8 +270,8 @@ export default function EditBookModal({
 							id="edit-description"
 							value={formData.description}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-							rows={4}
-							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
+							rows={2}
+							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4 resize-none"
 						/>
 					</div>
 
@@ -324,14 +343,14 @@ export default function EditBookModal({
 					)}
 
 					{/* Action Buttons */}
-					<div className="flex gap-3 justify-end pt-2">
+					<div className="flex gap-3 justify-end pt-4">
 						<Button
 							type="button"
 							variant="ghost"
 							size="4"
 							onClick={onClose}
 							disabled={isSubmitting}
-							className="bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a3/80"
+							className="bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a3/80 px-4 py-2"
 						>
 							Cancel
 						</Button>
@@ -340,7 +359,7 @@ export default function EditBookModal({
 							variant="classic"
 							size="4"
 							disabled={isSubmitting}
-							className="bg-blue-9 hover:bg-blue-10 text-white"
+							className="bg-blue-9 hover:bg-blue-10 text-white px-4 py-2"
 						>
 							{isSubmitting ? "Saving..." : "Save Changes"}
 						</Button>

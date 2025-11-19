@@ -34,6 +34,7 @@ export default async function SettingsPage({
 					<SettingsForm
 						companyId={companyId}
 						initialExperienceTitle={merchant?.experienceTitle || null}
+						initialExperienceTitleColor={merchant?.experienceTitleColor || null}
 						initialExperienceBackground={merchant?.experienceBackground || null}
 						initialShelfBackgroundImage={merchant?.shelfBackgroundImage || null}
 					/>

@@ -49,10 +49,11 @@ export default function DashboardSidebar({
 			<aside
 				className={`
 					fixed md:static inset-y-0 left-0 z-50
-					w-64 bg-gray-a1 border-r border-gray-a4 flex flex-col
+					w-64 bg-gray-a1 backdrop-blur-xl border-r border-gray-a4 flex flex-col
 					transform transition-transform duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
 				`}
+				style={{ backgroundColor: 'rgba(10, 10, 10, 0.95)' }}
 			>
 				{/* Sidebar Header */}
 				<div className="p-6 border-b border-gray-a4 flex items-center justify-between">
@@ -81,7 +82,7 @@ export default function DashboardSidebar({
 												onClose();
 											}
 										}}
-										className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative ${
+										className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative whitespace-nowrap ${
 											isActive
 												? "bg-gray-a2 text-gray-12 font-medium"
 												: "text-gray-10 hover:bg-gray-a2"
@@ -90,8 +91,8 @@ export default function DashboardSidebar({
 										{isActive && (
 											<div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-9 rounded-l-lg" />
 										)}
-										<span className="text-xl">{item.icon}</span>
-										<span>{item.label}</span>
+										<span className="text-xl shrink-0">{item.icon}</span>
+										<span className="truncate">{item.label}</span>
 									</Link>
 								</li>
 							);

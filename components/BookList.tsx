@@ -221,30 +221,42 @@ export default function BookList({ books, companyId }: BookListProps) {
 			{/* Delete confirmation dialog */}
 			{bookToDelete && (
 				<Dialog open={!!bookToDelete} onOpenChange={() => setBookToDelete(null)}>
-					<DialogContent className="max-w-md bg-gray-a1 backdrop-blur-xl border-gray-a5">
-						<DialogHeader>
-							<DialogTitle className="text-6 font-semibold text-gray-12">
+					<DialogContent className="max-w-sm w-[90vw] bg-gray-a1/50 backdrop-blur-xl border-gray-a5 p-4 sm:p-6 [&>button.absolute]:hidden">
+						<DialogHeader className="relative pb-2">
+							<DialogTitle className="text-5 sm:text-6 font-semibold text-gray-12 pr-8">
 								Delete Book
 							</DialogTitle>
+							<button
+								onClick={() => setBookToDelete(null)}
+								className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 hover:text-gray-12 shrink-0 z-10"
+								aria-label="Close"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<line x1="18" y1="6" x2="6" y2="18"></line>
+									<line x1="6" y1="6" x2="18" y2="18"></line>
+								</svg>
+							</button>
 						</DialogHeader>
-						<div className="space-y-4 py-4">
-							<p className="text-4 text-gray-11">
-								Are you sure you want to delete "{bookToDelete.title}"? This action
-								will delete the book from both the database, it cannot
-								be undone.
+						<div className="space-y-4 py-2">
+							<p className="text-3 sm:text-4 text-gray-11">
+								Are you sure you want to delete "{bookToDelete.title}"? This action cannot be undone.
 							</p>
-							<div className="flex gap-3">
+							<div className="flex gap-2 sm:gap-3 pt-2">
 								<Button
 									variant="ghost"
 									size="4"
 									onClick={() => setBookToDelete(null)}
 									disabled={isPending}
-									className="flex-1"
-									style={{
-										backgroundColor: '#f3f4f6',
-										border: '1px solid #e5e7eb',
-										color: '#111827',
-									}}
+									className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a3/80"
 								>
 									Cancel
 								</Button>
@@ -253,22 +265,7 @@ export default function BookList({ books, companyId }: BookListProps) {
 									size="4"
 									onClick={confirmDelete}
 									disabled={isPending}
-									className="flex-1"
-									style={{
-										backgroundColor: '#dc2626',
-										border: 'none',
-										color: '#ffffff',
-									}}
-									onMouseEnter={(e) => {
-										if (!isPending) {
-											e.currentTarget.style.backgroundColor = '#b91c1c';
-										}
-									}}
-									onMouseLeave={(e) => {
-										if (!isPending) {
-											e.currentTarget.style.backgroundColor = '#dc2626';
-										}
-									}}
+									className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base bg-red-9 hover:bg-red-10 text-white"
 								>
 									{isPending ? "Deleting..." : "Delete"}
 								</Button>
@@ -317,28 +314,36 @@ function SortableBookItem({
 		<div
 			ref={setNodeRef}
 			style={style}
-			{...attributes}
-			{...listeners}
-			className="border border-gray-a4 rounded-lg p-4 bg-gray-a1 hover:bg-gray-a2 transition-colors relative group cursor-grab active:cursor-grabbing"
+			className="border border-gray-a4 rounded-lg p-4 bg-gray-a1 hover:bg-gray-a2 transition-colors relative group"
 		>
-			{/* Position indicator */}
+			{/* Drag handle - always visible on mobile, hover on desktop */}
 			<div
-				className="absolute top-2 left-2 z-10 flex items-center gap-1.5"
-				style={{ pointerEvents: 'none' }}
+				{...attributes}
+				{...listeners}
+				className="absolute top-2 left-2 z-10 flex items-center gap-1.5 cursor-grab active:cursor-grabbing"
+				style={{ 
+					touchAction: 'none',
+					WebkitUserSelect: 'none',
+					userSelect: 'none',
+					minWidth: '60px',
+					minHeight: '32px',
+				}}
 			>
 				<div
-					className="px-2 py-0.5 rounded-md text-xs font-semibold"
+					className="px-2 py-0.5 rounded-md text-xs font-semibold select-none"
 					style={{
 						backgroundColor: '#2563eb',
 						color: '#ffffff',
+						pointerEvents: 'none',
 					}}
 				>
 					#{position}
 				</div>
 				<div
-					className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+					className="p-2 rounded-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity select-none"
 					style={{
 						backgroundColor: '#f3f4f6',
+						pointerEvents: 'none',
 					}}
 					title="Drag to reorder"
 				>
@@ -362,8 +367,8 @@ function SortableBookItem({
 				</div>
 			</div>
 
-			{/* Action buttons */}
-			<div className="absolute top-2 right-2 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+			{/* Action buttons - always visible on mobile, hover on desktop */}
+			<div className="absolute top-2 right-2 z-10 flex gap-1.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
 				{/* Edit button */}
 				<button
 					onClick={(e) => {

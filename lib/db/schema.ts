@@ -19,6 +19,7 @@ export const merchants = pgTable('merchants', {
 	// Bookshelf display settings
 	displayFormat: text('display_format').notNull().default('grid'),
 	experienceTitle: text('experience_title'), // Title for the experience page
+	experienceTitleColor: text('experience_title_color'), // Color for the experience page title
 	experienceBackground: text('experience_background'), // Background image/color for experience page
 	shelfBackgroundImage: text('shelf_background_image'), // Background image for shelf rows
 	

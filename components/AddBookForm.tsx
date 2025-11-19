@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@whop/react/components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { createBook, getUploadPath, getPdfPublicUrl } from "@/app/action/books";
 import { checkCanCreateBook, checkSubscriptionStatus } from "@/app/action/subscription";
 import { useRouter } from "next/navigation";
@@ -384,23 +383,25 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 
 			{/* Paywall */}
 			<div className="space-y-4 border-t border-gray-a4 pt-4">
-				<div className="flex items-center justify-between">
-					<div className="space-y-0.5">
-						<Label htmlFor="isBehindPaywall" className="text-gray-12">
+				<div className="flex items-start gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+					<input
+						type="checkbox"
+						id="isBehindPaywall"
+						checked={formData.isBehindPaywall}
+						onChange={(e) =>
+							setFormData((prev) => ({ ...prev, isBehindPaywall: e.target.checked }))
+						}
+						disabled={isSubmitting}
+						className="h-5 w-5 rounded border-gray-a4 accent-blue-9 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+					/>
+					<div className="space-y-0.5 flex-1">
+						<Label htmlFor="isBehindPaywall" className="text-gray-12 cursor-pointer">
 							Behind Paywall
 						</Label>
 						<p className="text-2 text-gray-10">
 							Require users to have access before viewing this book
 						</p>
 					</div>
-					<Switch
-						id="isBehindPaywall"
-						checked={formData.isBehindPaywall}
-						onCheckedChange={(checked) =>
-							setFormData((prev) => ({ ...prev, isBehindPaywall: checked }))
-						}
-						disabled={isSubmitting}
-					/>
 				</div>
 
 				{/* Price and Currency - shown when paywall is enabled */}
@@ -562,86 +563,94 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 				{showAdvanced && (
 					<div className="space-y-4 pl-2">
 						{/* Allow Download */}
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label htmlFor="allowDownload" className="text-gray-12">
+						<div className="flex items-start gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+							<input
+								type="checkbox"
+								id="allowDownload"
+								checked={formData.allowDownload}
+								onChange={(e) =>
+									setFormData((prev) => ({ ...prev, allowDownload: e.target.checked }))
+								}
+								disabled={isSubmitting}
+								className="h-5 w-5 rounded border-gray-a4 accent-blue-9 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+							/>
+							<div className="space-y-0.5 flex-1">
+								<Label htmlFor="allowDownload" className="text-gray-12 cursor-pointer">
 									Allow PDF Download
 								</Label>
 								<p className="text-2 text-gray-10">
 									Allow users to download the original PDF file
 								</p>
 							</div>
-							<Switch
-								id="allowDownload"
-								checked={formData.allowDownload}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({ ...prev, allowDownload: checked }))
-								}
-								disabled={isSubmitting}
-							/>
 						</div>
 
 						{/* Show Fullscreen Button */}
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label htmlFor="showFullScreen" className="text-gray-12">
+						<div className="flex items-start gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+							<input
+								type="checkbox"
+								id="showFullScreen"
+								checked={formData.showFullScreen}
+								onChange={(e) =>
+									setFormData((prev) => ({ ...prev, showFullScreen: e.target.checked }))
+								}
+								disabled={isSubmitting}
+								className="h-5 w-5 rounded border-gray-a4 accent-blue-9 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+							/>
+							<div className="space-y-0.5 flex-1">
+								<Label htmlFor="showFullScreen" className="text-gray-12 cursor-pointer">
 									Show Fullscreen Button
 								</Label>
 								<p className="text-2 text-gray-10">
 									Display the fullscreen button on the flipbook
 								</p>
 							</div>
-							<Switch
-								id="showFullScreen"
-								checked={formData.showFullScreen}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({ ...prev, showFullScreen: checked }))
-								}
-								disabled={isSubmitting}
-							/>
 						</div>
 
 						{/* Show Share Button */}
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label htmlFor="showShareButton" className="text-gray-12">
+						<div className="flex items-start gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+							<input
+								type="checkbox"
+								id="showShareButton"
+								checked={formData.showShareButton}
+								onChange={(e) =>
+									setFormData((prev) => ({ ...prev, showShareButton: e.target.checked }))
+								}
+								disabled={isSubmitting}
+								className="h-5 w-5 rounded border-gray-a4 accent-blue-9 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+							/>
+							<div className="space-y-0.5 flex-1">
+								<Label htmlFor="showShareButton" className="text-gray-12 cursor-pointer">
 									Show Share Button
 								</Label>
 								<p className="text-2 text-gray-10">
 									Display the share button on the flipbook
 								</p>
 							</div>
-							<Switch
-								id="showShareButton"
-								checked={formData.showShareButton}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({ ...prev, showShareButton: checked }))
-								}
-								disabled={isSubmitting}
-							/>
 						</div>
 
 						{/* Show Previous/Next Buttons */}
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label htmlFor="showPrevNextButtons" className="text-gray-12">
+						<div className="flex items-start gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+							<input
+								type="checkbox"
+								id="showPrevNextButtons"
+								checked={formData.showPrevNextButtons}
+								onChange={(e) =>
+									setFormData((prev) => ({
+										...prev,
+										showPrevNextButtons: e.target.checked,
+									}))
+								}
+								disabled={isSubmitting}
+								className="h-5 w-5 rounded border-gray-a4 accent-blue-9 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 mt-0.5 shrink-0"
+							/>
+							<div className="space-y-0.5 flex-1">
+								<Label htmlFor="showPrevNextButtons" className="text-gray-12 cursor-pointer">
 									Show Previous/Next Buttons
 								</Label>
 								<p className="text-2 text-gray-10">
 									Display navigation buttons to move between pages
 								</p>
 							</div>
-							<Switch
-								id="showPrevNextButtons"
-								checked={formData.showPrevNextButtons}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({
-										...prev,
-										showPrevNextButtons: checked,
-									}))
-								}
-								disabled={isSubmitting}
-							/>
 						</div>
 					</div>
 				)}
