@@ -49,25 +49,25 @@ export default function DashboardSidebar({
 			<aside
 				className={`
 					fixed md:static inset-y-0 left-0 z-50
-					w-64 bg-gray-a1/50 backdrop-blur-xl border-r border-gray-a4/50 flex flex-col
+					w-64 backdrop-blur-xl border-r border-gray-a4/50 flex flex-col
 					transform transition-transform duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+					bg-white/80 dark:bg-gray-a1/70
 				`}
 				style={{ 
-					backgroundColor: 'rgba(10, 10, 10, 0.7)',
 					backdropFilter: 'blur(20px) saturate(180%)',
 					WebkitBackdropFilter: 'blur(20px) saturate(180%)',
 				}}
 			>
 				{/* Sidebar Header */}
 				<div className="p-6 border-b border-gray-a4 flex items-center justify-between">
-					<h2 className="text-6 font-semibold text-gray-11">Bookshelf</h2>
+					<h2 className="text-6 font-semibold text-gray-12 dark:text-gray-11">Bookshelf</h2>
 					<button
 						onClick={onClose}
-						className="md:hidden p-2 hover:bg-gray-a2 rounded-lg transition-colors"
+						className="md:hidden p-2 hover:bg-gray-a2 dark:hover:bg-gray-a2 rounded-lg transition-colors"
 						aria-label="Close sidebar"
 					>
-						<X className="w-5 h-5 text-gray-10" />
+						<X className="w-5 h-5 text-gray-12 dark:text-gray-10" />
 					</button>
 				</div>
 
@@ -88,8 +88,8 @@ export default function DashboardSidebar({
 										}}
 										className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors relative whitespace-nowrap ${
 											isActive
-												? "bg-gray-a2 text-gray-12 font-medium"
-												: "text-gray-10 hover:bg-gray-a2"
+												? "bg-gray-a2 dark:bg-gray-a2 text-gray-12 dark:text-gray-12 font-medium"
+												: "text-gray-11 dark:text-gray-10 hover:bg-gray-a2 dark:hover:bg-gray-a2"
 										}`}
 									>
 										{isActive && (

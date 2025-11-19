@@ -206,7 +206,7 @@ export default function EditBookModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-2xl bg-gray-a2/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-hidden p-6 [&>button.absolute]:hidden">
+			<DialogContent className="max-w-2xl bg-white/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 max-h-[90vh] overflow-hidden p-6 [&>button.absolute]:hidden">
 				<DialogHeader className="relative">
 					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12 pr-8">
 						Edit Book
@@ -234,7 +234,7 @@ export default function EditBookModal({
 				<form onSubmit={handleSubmit} className="space-y-4 py-4">
 					{/* Title */}
 					<div>
-						<Label htmlFor="edit-title" className="text-4 text-gray-11 mb-2 block">
+						<Label htmlFor="edit-title" className="text-4 text-gray-12 dark:text-gray-11 mb-2 block">
 							Title <span className="text-red-11">*</span>
 						</Label>
 						<Input
@@ -243,13 +243,13 @@ export default function EditBookModal({
 							value={formData.title}
 							onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
 							required
-							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
+							className="bg-white dark:bg-gray-a2/80 backdrop-blur-sm border-gray-a4 text-gray-12 dark:text-gray-12"
 						/>
 					</div>
 
 					{/* Subtitle */}
 					<div>
-						<Label htmlFor="edit-subtitle" className="text-4 text-gray-11 mb-2 block">
+						<Label htmlFor="edit-subtitle" className="text-4 text-gray-12 dark:text-gray-11 mb-2 block">
 							Subtitle
 						</Label>
 						<Input
@@ -257,13 +257,13 @@ export default function EditBookModal({
 							type="text"
 							value={formData.subtitle}
 							onChange={(e) => setFormData((prev) => ({ ...prev, subtitle: e.target.value }))}
-							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
+							className="bg-white dark:bg-gray-a2/80 backdrop-blur-sm border-gray-a4 text-gray-12 dark:text-gray-12"
 						/>
 					</div>
 
 					{/* Description */}
 					<div>
-						<Label htmlFor="edit-description" className="text-4 text-gray-11 mb-2 block">
+						<Label htmlFor="edit-description" className="text-4 text-gray-12 dark:text-gray-11 mb-2 block">
 							Description
 						</Label>
 						<Textarea
@@ -271,20 +271,20 @@ export default function EditBookModal({
 							value={formData.description}
 							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
 							rows={2}
-							className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4 resize-none"
+							className="bg-white dark:bg-gray-a2/80 backdrop-blur-sm border-gray-a4 resize-none text-gray-12 dark:text-gray-12"
 						/>
 					</div>
 
 					{/* Behind Paywall Toggle */}
-					<div className="flex items-center gap-3 p-3 rounded-lg bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
+					<div className="flex items-center gap-3 p-3 rounded-lg bg-gray-a1/50 dark:bg-gray-a2/50 backdrop-blur-sm border border-gray-a4">
 						<input
 							type="checkbox"
 							id="edit-behind-paywall"
 							checked={formData.isBehindPaywall}
 							onChange={(e) => setFormData((prev) => ({ ...prev, isBehindPaywall: e.target.checked }))}
-							className="h-4 w-4 rounded border-gray-a4 accent-gray-a8"
+							className="h-4 w-4 rounded border-gray-a4 accent-blue-9"
 						/>
-						<Label htmlFor="edit-behind-paywall" className="text-4 text-gray-11 cursor-pointer">
+						<Label htmlFor="edit-behind-paywall" className="text-4 text-gray-12 dark:text-gray-11 cursor-pointer">
 							Behind Paywall
 						</Label>
 					</div>
@@ -293,7 +293,7 @@ export default function EditBookModal({
 					{formData.isBehindPaywall && (
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<Label htmlFor="edit-price" className="text-4 text-gray-11 mb-2 block">
+								<Label htmlFor="edit-price" className="text-4 text-gray-12 dark:text-gray-11 mb-2 block">
 									Price <span className="text-red-11">*</span>
 								</Label>
 								<Input
@@ -304,11 +304,11 @@ export default function EditBookModal({
 									value={formData.price}
 									onChange={(e) => setFormData((prev) => ({ ...prev, price: e.target.value }))}
 									required
-									className="bg-gray-a2/80 backdrop-blur-sm border-gray-a4"
+									className="bg-white dark:bg-gray-a2/80 backdrop-blur-sm border-gray-a4 text-gray-12 dark:text-gray-12"
 								/>
 							</div>
 							<div>
-								<Label htmlFor="edit-currency" className="text-4 text-gray-11 mb-2 block">
+								<Label htmlFor="edit-currency" className="text-4 text-gray-12 dark:text-gray-11 mb-2 block">
 									Currency <span className="text-red-11">*</span>
 								</Label>
 								<select
@@ -316,7 +316,7 @@ export default function EditBookModal({
 									value={formData.currency}
 									onChange={(e) => setFormData((prev) => ({ ...prev, currency: e.target.value }))}
 									required
-									className="flex h-10 w-full rounded-md border border-gray-a4 bg-gray-a2/80 backdrop-blur-sm px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2"
+									className="flex h-10 w-full rounded-md border border-gray-a4 bg-white dark:bg-gray-a2/80 backdrop-blur-sm px-3 py-2 text-sm text-gray-12 dark:text-gray-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-a8 focus-visible:ring-offset-2"
 								>
 									{CURRENCIES.map((curr) => (
 										<option key={curr.value} value={curr.value}>
@@ -350,7 +350,7 @@ export default function EditBookModal({
 							size="4"
 							onClick={onClose}
 							disabled={isSubmitting}
-							className="bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a3/80 px-4 py-2"
+							className="bg-gray-a1 dark:bg-gray-a2/80 backdrop-blur-sm border border-gray-a4 hover:bg-gray-a2 dark:hover:bg-gray-a3/80 px-4 py-2 text-gray-12 dark:text-gray-12"
 						>
 							Cancel
 						</Button>
