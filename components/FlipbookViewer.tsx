@@ -47,7 +47,7 @@ export default function FlipbookViewer({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-none w-screen h-screen max-h-screen p-0 flex flex-col m-0 rounded-none translate-x-0 translate-y-0 left-0 top-0">
+			<DialogContent className="max-w-none w-screen h-screen max-h-screen p-0 flex flex-col m-0 rounded-none translate-x-0 translate-y-0 left-0 top-0 [&>button.absolute]:hidden">
 				<DialogHeader className="px-3 sm:px-4 py-2 sm:py-2.5 border-b border-gray-a4 shrink-0 bg-gray-a1 ">
 					<div className="flex items-center justify-between">
 						<DialogTitle className="text-4 sm:text-5 font-semibold text-gray-12 truncate pr-2">

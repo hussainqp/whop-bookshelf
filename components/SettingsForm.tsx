@@ -152,14 +152,16 @@ export default function SettingsForm({
 							Choose a color for the experience page title.
 						</p>
 						<div className="flex gap-2 sm:gap-3 items-center">
-							<Input
-								id="experience-title-color"
-								type="color"
-								value={experienceTitleColor.startsWith("#") ? experienceTitleColor : "#1f2937"}
-								onChange={(e) => setExperienceTitleColor(e.target.value)}
-								className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
-								style={{ minWidth: '64px', minHeight: '48px' }}
-							/>
+							<label htmlFor="experience-title-color" className="cursor-pointer shrink-0">
+								<Input
+									id="experience-title-color"
+									type="color"
+									value={experienceTitleColor.startsWith("#") ? experienceTitleColor : "#1f2937"}
+									onChange={(e) => setExperienceTitleColor(e.target.value)}
+									className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
+									style={{ minWidth: '64px', minHeight: '48px' }}
+								/>
+							</label>
 							<Input
 								type="text"
 								value={experienceTitleColor.startsWith("#") ? experienceTitleColor : ""}
@@ -191,18 +193,20 @@ export default function SettingsForm({
 								Background Color (Hex code)
 							</Label>
 							<div className="flex gap-2 sm:gap-3 items-center">
-								<Input
-									id="experience-background-color"
-									type="color"
-									value={
-										experienceBackground.startsWith("#")
-											? experienceBackground
-											: "#ffffff"
-									}
-									onChange={handleExperienceBackgroundColorChange}
-									className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
-									style={{ minWidth: '64px', minHeight: '48px' }}
-								/>
+								<label htmlFor="experience-background-color" className="cursor-pointer shrink-0">
+									<Input
+										id="experience-background-color"
+										type="color"
+										value={
+											experienceBackground.startsWith("#")
+												? experienceBackground
+												: "#ffffff"
+										}
+										onChange={handleExperienceBackgroundColorChange}
+										className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
+										style={{ minWidth: '64px', minHeight: '48px' }}
+									/>
+								</label>
 								<Input
 									type="text"
 									value={experienceBackground.startsWith("#") ? experienceBackground : ""}
