@@ -113,7 +113,7 @@ export default function PaywallModal({
 	}
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-md bg-gray-a2/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a5">
+			<DialogContent className="max-w-md bg-white/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 m-4">
 				<DialogHeader>
 					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12">
 						Premium Content
@@ -121,7 +121,7 @@ export default function PaywallModal({
 				</DialogHeader>
 				<div className="space-y-4 py-4">
 					<div className="text-center">
-						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-a3 dark:bg-gray-a3">
+						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-a1 dark:bg-gray-a3">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-8 w-8 text-gray-11 dark:text-gray-10"

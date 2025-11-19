@@ -87,7 +87,7 @@ export default function SubscriptionModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-md bg-gray-a2/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a5">
+			<DialogContent className="max-w-md bg-white/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 m-4">
 				<DialogHeader>
 					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12">
 						Subscribe to Add More Books
@@ -98,7 +98,7 @@ export default function SubscriptionModal({
 						<p className="text-4 text-gray-11 dark:text-gray-11 mb-4">
 							You've used your free book. Subscribe to add unlimited books to your bookshelf.
 						</p>
-						<div className="rounded-lg border border-gray-a4 bg-gray-a2/50 dark:bg-gray-a2 p-4 mb-4">
+						<div className="rounded-lg border border-gray-a4 bg-gray-a1/50 dark:bg-gray-a2 p-4 mb-4">
 							<div className="flex items-center justify-between mb-3">
 								<span className="text-5 font-semibold text-gray-12 dark:text-gray-12">Monthly Subscription</span>
 								<span className="text-5 font-bold text-gray-12 dark:text-gray-12">

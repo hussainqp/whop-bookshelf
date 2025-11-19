@@ -151,13 +151,14 @@ export default function SettingsForm({
 						<p className="text-3 text-gray-10">
 							Choose a color for the experience page title.
 						</p>
-						<div className="flex gap-2">
+						<div className="flex gap-2 sm:gap-3 items-center">
 							<Input
 								id="experience-title-color"
 								type="color"
 								value={experienceTitleColor.startsWith("#") ? experienceTitleColor : "#1f2937"}
 								onChange={(e) => setExperienceTitleColor(e.target.value)}
-								className="bg-gray-a1 border-gray-a4 h-10 w-20 cursor-pointer"
+								className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
+								style={{ minWidth: '64px', minHeight: '48px' }}
 							/>
 							<Input
 								type="text"
@@ -169,7 +170,7 @@ export default function SettingsForm({
 									}
 								}}
 								placeholder="#1f2937"
-								className="bg-gray-a1 border-gray-a4 flex-1"
+								className="bg-gray-a1 border-gray-a4 flex-1 h-12 sm:h-10 text-base sm:text-sm"
 								pattern="^#[0-9A-Fa-f]{6}$"
 							/>
 						</div>
@@ -189,7 +190,7 @@ export default function SettingsForm({
 							<Label htmlFor="experience-background-color" className="text-4 text-gray-11 mb-2 block">
 								Background Color (Hex code)
 							</Label>
-							<div className="flex gap-2">
+							<div className="flex gap-2 sm:gap-3 items-center">
 								<Input
 									id="experience-background-color"
 									type="color"
@@ -199,7 +200,8 @@ export default function SettingsForm({
 											: "#ffffff"
 									}
 									onChange={handleExperienceBackgroundColorChange}
-									className="bg-gray-a1 border-gray-a4 h-10 w-20 cursor-pointer"
+									className="bg-gray-a1 border-gray-a4 h-12 w-16 sm:h-10 sm:w-20 cursor-pointer shrink-0"
+									style={{ minWidth: '64px', minHeight: '48px' }}
 								/>
 								<Input
 									type="text"
@@ -212,7 +214,7 @@ export default function SettingsForm({
 										}
 									}}
 									placeholder="#ffffff"
-									className="bg-gray-a1 border-gray-a4 flex-1"
+									className="bg-gray-a1 border-gray-a4 flex-1 h-12 sm:h-10 text-base sm:text-sm"
 									pattern="^#[0-9A-Fa-f]{6}$"
 								/>
 							</div>
