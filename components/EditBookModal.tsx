@@ -206,14 +206,14 @@ export default function EditBookModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-2xl bg-gray-a1/50 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-hidden p-6 [&>button.absolute]:hidden">
+			<DialogContent className="max-w-2xl bg-gray-a2/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a5 max-h-[90vh] overflow-hidden p-6 [&>button.absolute]:hidden">
 				<DialogHeader className="relative">
-					<DialogTitle className="text-6 font-semibold text-gray-12 pr-8">
+					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12 pr-8">
 						Edit Book
 					</DialogTitle>
 					<button
 						onClick={onClose}
-						className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 hover:text-gray-12 shrink-0"
+						className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 dark:text-gray-12 hover:text-gray-12 shrink-0"
 						aria-label="Close"
 					>
 						<svg

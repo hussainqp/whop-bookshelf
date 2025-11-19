@@ -689,7 +689,7 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 					size="4"
 					onClick={() => router.push(`/dashboard/${companyId}`)}
 					disabled={isSubmitting}
-					className="w-full sm:w-auto"
+					className="hidden sm:flex w-full sm:w-auto"
 				>
 					Cancel
 				</Button>

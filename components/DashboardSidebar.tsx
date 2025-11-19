@@ -49,11 +49,15 @@ export default function DashboardSidebar({
 			<aside
 				className={`
 					fixed md:static inset-y-0 left-0 z-50
-					w-64 bg-gray-a1 backdrop-blur-xl border-r border-gray-a4 flex flex-col
+					w-64 bg-gray-a1/50 backdrop-blur-xl border-r border-gray-a4/50 flex flex-col
 					transform transition-transform duration-300 ease-in-out
 					${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
 				`}
-				style={{ backgroundColor: 'rgba(10, 10, 10, 0.95)' }}
+				style={{ 
+					backgroundColor: 'rgba(10, 10, 10, 0.7)',
+					backdropFilter: 'blur(20px) saturate(180%)',
+					WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+				}}
 			>
 				{/* Sidebar Header */}
 				<div className="p-6 border-b border-gray-a4 flex items-center justify-between">

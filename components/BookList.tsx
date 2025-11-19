@@ -221,14 +221,14 @@ export default function BookList({ books, companyId }: BookListProps) {
 			{/* Delete confirmation dialog */}
 			{bookToDelete && (
 				<Dialog open={!!bookToDelete} onOpenChange={() => setBookToDelete(null)}>
-					<DialogContent className="max-w-sm w-[90vw] bg-gray-a1/50 backdrop-blur-xl border-gray-a5 p-4 sm:p-6 [&>button.absolute]:hidden">
+					<DialogContent className="max-w-sm w-[90vw] bg-gray-a2/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a5 p-4 sm:p-6 [&>button.absolute]:hidden">
 						<DialogHeader className="relative pb-2">
-							<DialogTitle className="text-5 sm:text-6 font-semibold text-gray-12 pr-8">
+							<DialogTitle className="text-5 sm:text-6 font-semibold text-gray-12 dark:text-gray-12 pr-8">
 								Delete Book
 							</DialogTitle>
 							<button
 								onClick={() => setBookToDelete(null)}
-								className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 hover:text-gray-12 shrink-0 z-10"
+								className="absolute right-0 top-0 rounded-sm transition-all hover:bg-gray-a3 focus:outline-none focus:ring-2 focus:ring-gray-a8 focus:ring-offset-2 p-1.5 text-gray-12 dark:text-gray-12 hover:text-gray-12 shrink-0 z-10"
 								aria-label="Close"
 							>
 								<svg
@@ -247,7 +247,7 @@ export default function BookList({ books, companyId }: BookListProps) {
 							</button>
 						</DialogHeader>
 						<div className="space-y-4 py-2">
-							<p className="text-3 sm:text-4 text-gray-11">
+							<p className="text-3 sm:text-4 text-gray-11 dark:text-gray-11">
 								Are you sure you want to delete "{bookToDelete.title}"? This action cannot be undone.
 							</p>
 							<div className="flex gap-2 sm:gap-3 pt-2">

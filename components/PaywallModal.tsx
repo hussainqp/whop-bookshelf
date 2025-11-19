@@ -113,18 +113,18 @@ export default function PaywallModal({
 	}
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-md bg-gray-a1 backdrop-blur-xl border-gray-a5">
+			<DialogContent className="max-w-md bg-gray-a2/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a5">
 				<DialogHeader>
-					<DialogTitle className="text-6 font-semibold text-gray-12">
+					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12">
 						Premium Content
 					</DialogTitle>
 				</DialogHeader>
 				<div className="space-y-4 py-4">
 					<div className="text-center">
-						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-a3">
+						<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-a3 dark:bg-gray-a3">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="h-8 w-8 text-gray-10"
+								className="h-8 w-8 text-gray-11 dark:text-gray-10"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
@@ -137,12 +137,12 @@ export default function PaywallModal({
 								/>
 							</svg>
 						</div>
-						<h3 className="text-5 font-semibold text-gray-12 mb-2">
+						<h3 className="text-5 font-semibold text-gray-12 dark:text-gray-12 mb-2">
 							"{bookTitle}" is behind a paywall
 						</h3>
 						{price && (
 							<div className="mb-4">
-								<p className="text-6 font-bold text-gray-12">
+								<p className="text-6 font-bold text-gray-12 dark:text-gray-12">
 									{formatPrice(price, currency)}
 								</p>
 							</div>
@@ -150,14 +150,14 @@ export default function PaywallModal({
 						{isProcessing ? (
 							<div className="mb-6">
 								<div className="flex items-center justify-center gap-2">
-									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-12"></div>
-									<p className="text-4 text-gray-10">
+									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-12 dark:border-gray-12"></div>
+									<p className="text-4 text-gray-11 dark:text-gray-10">
 										Opening checkout...
 									</p>
 								</div>
 							</div>
 						) : !error ? (
-							<p className="text-4 text-gray-10 mb-6">
+							<p className="text-4 text-gray-11 dark:text-gray-10 mb-6">
 								Opening checkout to purchase access...
 							</p>
 						) : null}
