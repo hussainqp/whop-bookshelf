@@ -87,7 +87,7 @@ export default function SubscriptionModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-md bg-white/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 m-4">
+			<DialogContent className="max-w-md w-[calc(100vw-2rem)] sm:w-[90vw] bg-white/90 dark:bg-gray-a1 backdrop-blur-xl border-gray-a4 dark:border-gray-a5">
 				<DialogHeader>
 					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12">
 						Subscribe to Add More Books

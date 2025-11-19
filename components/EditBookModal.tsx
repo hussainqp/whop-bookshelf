@@ -206,7 +206,7 @@ export default function EditBookModal({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="max-w-2xl bg-white/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 max-h-[90vh] overflow-hidden p-4 sm:p-6 m-4 [&>button.absolute]:hidden">
+			<DialogContent className="max-w-2xl w-[calc(100vw-2rem)] sm:w-[90vw] bg-white/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 max-h-[90vh] overflow-hidden p-4 sm:p-6 [&>button.absolute]:hidden">
 				<DialogHeader className="relative">
 					<DialogTitle className="text-6 font-semibold text-gray-12 dark:text-gray-12 pr-8">
 						Edit Book

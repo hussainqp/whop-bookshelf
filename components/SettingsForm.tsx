@@ -187,7 +187,7 @@ export default function SettingsForm({
 
 						{/* Color Input */}
 						<div>
-							<Label htmlFor="experience-background-color" className="text-4 text-gray-11 mb-2 block">
+							<Label htmlFor="experience-background-color" className="text-4 text-gray-11 mb-2 block whitespace-nowrap">
 								Background Color (Hex code)
 							</Label>
 							<div className="flex gap-2 sm:gap-3 items-center">

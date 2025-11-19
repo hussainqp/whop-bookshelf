@@ -221,7 +221,7 @@ export default function BookList({ books, companyId }: BookListProps) {
 			{/* Delete confirmation dialog */}
 			{bookToDelete && (
 				<Dialog open={!!bookToDelete} onOpenChange={() => setBookToDelete(null)}>
-					<DialogContent className="max-w-sm w-[90vw] bg-white/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 p-4 sm:p-6 m-4 [&>button.absolute]:hidden">
+					<DialogContent className="max-w-sm w-[calc(100vw-2rem)] sm:w-[90vw] bg-white/90 dark:bg-gray-a1/50 backdrop-blur-xl border-gray-a4 dark:border-gray-a5 p-4 sm:p-6 [&>button.absolute]:hidden">
 						<DialogHeader className="relative pb-2">
 							<DialogTitle className="text-5 sm:text-6 font-semibold text-gray-12 dark:text-gray-12 pr-8">
 								Delete Book
