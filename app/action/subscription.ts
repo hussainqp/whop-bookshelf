@@ -130,7 +130,7 @@ export async function createSubscriptionCheckout(
 			// 	product_id: "prod_3i3cfankxb2uI",
 			// 	renewal_price: price, // Monthly subscription
 			// },
-			plan_id: "plan_8ezHAwYoKKNSn",
+			plan_id: "plan_qQ7psJJgz6oYD",
 			metadata: {
 				companyId: companyId,
 				userId: userId,

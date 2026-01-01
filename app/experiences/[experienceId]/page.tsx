@@ -1,10 +1,10 @@
-import { Button } from "@whop/react/components";
 import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
 import { type Book } from "@/components/Bookshelf";
 import { getAllBooks } from "@/app/action/books";
 import BookshelfWithViewer from "@/components/BookshelfWithViewer";
 import { getExperienceDataFromDBPublic } from "@/app/action/company";
+import AddBookButton from "@/components/AddBookButton";
 
 export default async function ExperiencePage({
 	params,
@@ -40,7 +40,8 @@ export default async function ExperiencePage({
 	const isAdmin = 
 		(experience as any).owner_id === userId || 
 		(experience as any).owner?.id === userId ||
-		access?.has_access === true && (access as any)?.role === "admin";
+		access?.has_access === true && (access as any)?.access_level === "admin";
+
 
 	// Get settings from merchant
 	const experienceTitle = merchant?.experienceTitle || "Your Bookshelf";
@@ -79,9 +80,7 @@ export default async function ExperiencePage({
 					</h1>
 					{isAdmin && (
 						<div className="absolute right-0 top-1/2 -translate-y-1/2">
-							<Button variant="classic" size="3">
-								Add Book
-							</Button>
+							<AddBookButton />
 						</div>
 					)}
 				</div>
