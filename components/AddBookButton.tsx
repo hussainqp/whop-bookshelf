@@ -1,22 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@whop/react/components";
-import AddBookInstructionsModal from "./AddBookInstructionsModal";
+import { useIframeSdk } from "@whop/react";
 
-export default function AddBookButton() {
-	const [isModalOpen, setIsModalOpen] = useState(false);
-
-	return (
-		<>
-			<Button variant="classic" size="3" onClick={() => setIsModalOpen(true)}>
-				Add Book
-			</Button>
-			<AddBookInstructionsModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-			/>
-		</>
-	);
+interface AddBookButtonProps {
+	companyId: string;
 }
 
+export default function AddBookButton({ companyId }: AddBookButtonProps) {
+	const iframeSdk = useIframeSdk();
+
+	function handleClick() {
+		iframeSdk.openExternalUrl({ 
+			url: `https://whop.com/dashboard/${companyId}/apps/app_ESUHD19IZeASks/` 
+		});
+	}
+
+	return (
+		<Button variant="classic" size="3" onClick={handleClick}>
+			Add Book
+		</Button>
+	);
+}

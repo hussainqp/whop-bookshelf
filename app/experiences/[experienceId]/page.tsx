@@ -78,9 +78,9 @@ export default async function ExperiencePage({
 					>
 						{experienceTitle}
 					</h1>
-					{isAdmin && (
+					{isAdmin && merchant?.companyId && (
 						<div className="absolute right-0 top-1/2 -translate-y-1/2">
-							<AddBookButton />
+							<AddBookButton companyId={merchant.companyId} />
 						</div>
 					)}
 				</div>
