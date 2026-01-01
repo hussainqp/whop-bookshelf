@@ -119,7 +119,7 @@ async function createHeyzineFlipbook(
 	}
 	
 	const data = await response.json();
-	
+	console.log('[HEYZINE API] Response:', data);
 	// Validate response structure
 	if (!data.id || !data.url || !data.thumbnail || !data.pdf) {
 		throw new Error("Invalid response from Heyzine API");
