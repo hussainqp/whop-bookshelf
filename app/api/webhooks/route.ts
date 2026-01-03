@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import { whopsdk } from "@/lib/whop-sdk";
 import { grantBookAccess } from "@/app/action/books";
 import { updateSubscriptionStatus } from "@/app/action/subscription";
+import { getCompanyDataFromDB, saveInitialCompany } from "@/app/action/company";
 
 export async function POST(request: NextRequest): Promise<Response> {
 	// Validate the webhook to ensure it's from Whop
@@ -55,6 +56,15 @@ async function handleMembershipActivated(membership: any) {
 		const planId = membership.plan?.id;
 		const renewalPeriodStart = membership.renewal_period_start;
 		const renewalPeriodEnd = membership.renewal_period_end;
+
+		// if company is not in the database, create it
+		const company = await getCompanyDataFromDB(companyId);
+		if (!company) {
+			await saveInitialCompany({
+				companyId,
+				name: membership.metadata?.name || null,
+			});
+		}
 
 		// Update subscription status
 		await updateSubscriptionStatus({
