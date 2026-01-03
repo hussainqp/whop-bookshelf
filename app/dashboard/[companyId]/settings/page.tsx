@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
 import DashboardLayout from "@/components/DashboardLayout";
 import SettingsForm from "@/components/SettingsForm";
-import { getCompanyDataFromDB } from "@/app/action/company";
+import { getCompanyDataFromDB, saveInitialCompany } from "@/app/action/company";
 
 export default async function SettingsPage({
 	params,
@@ -20,6 +20,13 @@ export default async function SettingsPage({
 		whopsdk.users.checkAccess(companyId, { id: userId }),
 		getCompanyDataFromDB(companyId),
 	]);
+
+	if (!merchant) {
+		await saveInitialCompany({
+			companyId,
+			name: null,
+		});
+	}
 
 	return (
 		<DashboardLayout companyId={companyId}>
