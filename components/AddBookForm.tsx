@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@whop/react/components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createBook, getUploadPath, getPdfPublicUrl } from "@/app/action/books";
+import { createBook, getUploadPath, getPdfPublicUrl, getThumbnailUploadPath } from "@/app/action/books";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 import { checkCanCreateBook, checkSubscriptionStatus } from "@/app/action/subscription";
 import { useRouter } from "next/navigation";
 import SubscriptionModal from "./SubscriptionModal";
@@ -161,7 +164,16 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 			// Step 3: Get public URL
 			const { url: pdfUrl } = await getPdfPublicUrl(uploadInfo.path);
 
-			// Step 4: Create book with the uploaded PDF URL
+			// Step 4: Generate thumbnail from PDF first page (client-side)
+			let thumbnailUrl: string | null = null;
+			try {
+				thumbnailUrl = await generateThumbnailClientSide(pdfFile, companyId, uploadInfo.path);
+			} catch (thumbnailError) {
+				console.error("Error generating thumbnail:", thumbnailError);
+				// Continue without thumbnail if generation fails
+			}
+
+			// Step 5: Create book with the uploaded PDF URL and thumbnail
 			const result = await createBook({
 				companyId,
 				pdfUrl,
@@ -178,6 +190,7 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 				showFullScreen: formData.showFullScreen,
 				showShareButton: formData.showShareButton,
 				showPrevNextButtons: formData.showPrevNextButtons,
+				thumbnailUrl,
 			});
 
 			if (result.success) {
@@ -210,6 +223,94 @@ export default function AddBookForm({ companyId }: AddBookFormProps) {
 		setIsFreeUser(!status.hasActiveSubscription);
 		
 		router.refresh();
+	};
+
+	// Generate thumbnail from PDF first page (client-side)
+	const generateThumbnailClientSide = async (
+		pdfFile: File,
+		companyId: string,
+		pdfFilePath: string
+	): Promise<string> => {
+		return new Promise((resolve, reject) => {
+			// Create a file URL for the PDF
+			const fileUrl = URL.createObjectURL(pdfFile);
+			
+			// Set up pdfjs worker
+			pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+			
+			// Load the PDF document
+			pdfjs.getDocument({ url: fileUrl }).promise
+				.then((pdf) => {
+					// Get the first page
+					return pdf.getPage(1);
+				})
+				.then((page) => {
+					// Render the page to a canvas
+					const viewport = page.getViewport({ scale: 2.0 });
+					const canvas = document.createElement('canvas');
+					const context = canvas.getContext('2d');
+					
+					if (!context) {
+						throw new Error('Failed to get canvas context');
+					}
+					
+					canvas.width = viewport.width;
+					canvas.height = viewport.height;
+					
+					const renderContext = {
+						canvasContext: context,
+						viewport: viewport,
+					};
+					
+					return page.render(renderContext).promise.then(() => {
+						// Convert canvas to blob
+						return new Promise<Blob>((resolveBlob, rejectBlob) => {
+							canvas.toBlob((blob) => {
+								if (blob) {
+									resolveBlob(blob);
+								} else {
+									rejectBlob(new Error('Failed to convert canvas to blob'));
+								}
+							}, 'image/jpeg', 0.85);
+						});
+					});
+				})
+				.then(async (blob) => {
+					// Clean up the object URL
+					URL.revokeObjectURL(fileUrl);
+					
+					// Get thumbnail upload path
+					const thumbnailInfo = await getThumbnailUploadPath(companyId, pdfFilePath);
+					
+					// Upload thumbnail to Supabase
+					const { error: uploadError } = await supabaseClient.storage
+						.from(thumbnailInfo.bucketName)
+						.upload(thumbnailInfo.path, blob, {
+							contentType: 'image/jpeg',
+							upsert: false,
+						});
+					
+					if (uploadError) {
+						throw new Error(`Failed to upload thumbnail: ${uploadError.message}`);
+					}
+					
+					// Get public URL for thumbnail
+					const bucketName = process.env.NEXT_PUBLIC_SUPABASE_BUCKET_NAME || 'pdfs';
+					const { data: urlData } = supabaseClient.storage
+						.from(thumbnailInfo.bucketName)
+						.getPublicUrl(thumbnailInfo.path);
+					
+					if (!urlData?.publicUrl) {
+						throw new Error("Failed to get public URL for thumbnail");
+					}
+					
+					resolve(urlData.publicUrl);
+				})
+				.catch((error) => {
+					URL.revokeObjectURL(fileUrl);
+					reject(error);
+				});
+		});
 	};
 
 	// Show loading state while checking subscription
