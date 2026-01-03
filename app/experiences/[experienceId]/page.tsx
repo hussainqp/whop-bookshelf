@@ -78,9 +78,9 @@ export default async function ExperiencePage({
 					>
 						{experienceTitle}
 					</h1>
-					{isAdmin && merchant?.companyId && (
+					{isAdmin && experience?.company?.id && (
 						<div className="absolute right-0 top-1/2 -translate-y-1/2">
-							<AddBookButton companyId={merchant.companyId} />
+							<AddBookButton companyId={experience?.company?.id || ""} />
 						</div>
 					)}
 				</div>
