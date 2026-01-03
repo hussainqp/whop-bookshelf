@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Bookshelf, { type Book } from "./Bookshelf";
-import FlipbookViewer from "./FlipbookViewer";
+import FlipbookViewerCustom from "./FlipbookViewerCustom";
 import PaywallModal from "./PaywallModal";
 import { checkBookAccess } from "@/app/action/books";
 
@@ -50,7 +50,7 @@ export default function BookshelfWithViewer({
 	};
 
 	const handleBookClick = async (book: Book) => {
-		if (!book.flipbookUrl) return;
+		if (!book.pdfUrl) return;
 
 		// If book is behind paywall, check access
 		if (book.isBehindPaywall) {
@@ -79,9 +79,9 @@ export default function BookshelfWithViewer({
 				shelfImage={shelfImage}
 				onBookClick={handleBookClick}
 			/>
-			{selectedBook && selectedBook.flipbookUrl && (
-				<FlipbookViewer
-					flipbookUrl={selectedBook.flipbookUrl}
+			{selectedBook && selectedBook.pdfUrl && (
+				<FlipbookViewerCustom
+					pdfUrl={selectedBook.pdfUrl}
 					title={selectedBook.title}
 					isOpen={!!selectedBook}
 					onClose={() => setSelectedBook(null)}

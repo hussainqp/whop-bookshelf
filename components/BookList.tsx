@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import FlipbookViewer from "./FlipbookViewer";
+import FlipbookViewerCustom from "./FlipbookViewerCustom";
 import EditBookModal from "./EditBookModal";
 import { deleteBook, updateBookOrder } from "@/app/action/books";
 import { Button } from "@whop/react/components";
@@ -32,7 +32,7 @@ interface Book {
 	description?: string;
 	coverImage?: string;
 	flipbookUrl?: string;
-	heyzineId?: string;
+	pdfUrl?: string;
 	isBehindPaywall?: boolean;
 	price?: number;
 	currency?: string;
@@ -188,7 +188,7 @@ export default function BookList({ books, companyId }: BookListProps) {
 									companyId={companyId}
 									onDelete={handleDelete}
 									onEdit={handleEdit}
-									onClick={() => book.flipbookUrl && setSelectedBook(book)}
+									onClick={() => book.pdfUrl && setSelectedBook(book)}
 									isPending={isPending}
 									position={index + 1}
 								/>
@@ -198,9 +198,9 @@ export default function BookList({ books, companyId }: BookListProps) {
 				</DndContext>
 			</div>
 
-			{selectedBook && selectedBook.flipbookUrl && (
-				<FlipbookViewer
-					flipbookUrl={selectedBook.flipbookUrl}
+			{selectedBook && selectedBook.pdfUrl && (
+				<FlipbookViewerCustom
+					pdfUrl={selectedBook.pdfUrl}
 					title={selectedBook.title}
 					isOpen={!!selectedBook}
 					onClose={() => setSelectedBook(null)}
@@ -460,7 +460,7 @@ function SortableBookItem({
 						e.stopPropagation();
 					}
 				}}
-				className={book.flipbookUrl ? "cursor-pointer" : "cursor-default"}
+				className={book.pdfUrl ? "cursor-pointer" : "cursor-default"}
 			>
 				{book.coverImage ? (
 					<div className="w-full h-48 bg-gray-a3 rounded mb-3 overflow-hidden">
@@ -488,7 +488,7 @@ function SortableBookItem({
 						{book.description}
 					</p>
 				)}
-				{book.flipbookUrl && (
+				{book.pdfUrl && (
 					<p className="text-2 text-gray-9 mt-2">
 						Click to preview
 					</p>

@@ -9,6 +9,7 @@ export interface Book {
 	coverColor?: string;
 	coverGradient?: string;
 	flipbookUrl?: string;
+	pdfUrl?: string;
 	isBehindPaywall?: boolean;
 	price?: number;
 	currency?: string;
@@ -106,7 +107,7 @@ function BookItem({ book, onBookClick }: { book: Book; onBookClick?: (book: Book
 		backgroundPosition: "center",
 	};
 
-	const isClickable = book.flipbookUrl && onBookClick;
+	const isClickable = book.pdfUrl && onBookClick;
 
 	const handleClick = () => {
 		if (isClickable) {

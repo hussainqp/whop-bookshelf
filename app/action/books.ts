@@ -56,76 +56,22 @@ export async function getPdfPublicUrl(filePath: string) {
 	}
 }
 
-// Call Heyzine API to create flipbook
-async function createHeyzineFlipbook(
-	pdfUrl: string,
-	options: {
-		title?: string;
-		subtitle?: string;
-		description?: string;
-		clientId: string;
-		allowDownload?: boolean;
-		showFullScreen?: boolean;
-		showShareButton?: boolean;
-		showPrevNextButtons?: boolean;
+// Get upload path for thumbnail
+export async function getThumbnailUploadPath(companyId: string, pdfFilePath: string) {
+	try {
+		await verifyUser(companyId);
+		
+		// Generate thumbnail path based on PDF path
+		const thumbnailPath = pdfFilePath.replace(/\.pdf$/i, '-thumbnail.jpg');
+		
+		return {
+			path: thumbnailPath,
+			bucketName: process.env.SUPABASE_BUCKET_NAME || 'pdfs',
+		} as const;
+	} catch (err: unknown) {
+		console.error('[GET THUMBNAIL UPLOAD PATH] Error:', err);
+		throw new Error("Failed to generate thumbnail upload path");
 	}
-): Promise<{
-	id: string;
-	url: string;
-	thumbnail: string;
-	pdf: string;
-	meta: {
-		num_pages: number;
-		aspect_ratio: number;
-	};
-}> {
-	const heyzineApiKey = process.env.HEYZINE_API_KEY;
-	const heyzineClientId = options.clientId || process.env.HEYZINE_CLIENT_ID;
-	
-	if (!heyzineApiKey || !heyzineClientId) {
-		throw new Error("Heyzine API credentials are not configured");
-	}
-	
-	const requestBody: Record<string, any> = {
-		pdf: pdfUrl,
-		client_id: heyzineClientId,
-	};
-	
-	// Add optional parameters
-	if (options.title) requestBody.title = options.title;
-	if (options.subtitle) requestBody.subtitle = options.subtitle;
-	if (options.description) requestBody.description = options.description;
-	
-	// Add display control parameters (mapping to Heyzine API format)
-	if (options.allowDownload !== undefined) requestBody.download = options.allowDownload;
-	if (options.showFullScreen !== undefined) requestBody.full_screen = options.showFullScreen;
-	if (options.showShareButton !== undefined) requestBody.share = options.showShareButton;
-	if (options.showPrevNextButtons !== undefined) requestBody.prev_next = options.showPrevNextButtons;
-	
-	// Call Heyzine REST API (sync endpoint)
-	const response = await fetch('https://heyzine.com/api1/rest', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${heyzineApiKey}`,
-		},
-		body: JSON.stringify(requestBody),
-	});
-	
-	if (!response.ok) {
-		const errorText = await response.text();
-		console.error('[HEYZINE API] Error response:', errorText);
-		throw new Error(`Heyzine API error: ${response.status} ${response.statusText}`);
-	}
-	
-	const data = await response.json();
-	console.log('[HEYZINE API] Response:', data);
-	// Validate response structure
-	if (!data.id || !data.url || !data.thumbnail || !data.pdf) {
-		throw new Error("Invalid response from Heyzine API");
-	}
-	
-	return data;
 }
 
 // Get all books for a company
@@ -145,7 +91,6 @@ export const getAllBooks = cache(async (companyId: string) => {
 				flipbookUrl: flipbooks.flipbookUrl,
 				pdfUrl: flipbooks.pdfUrl,
 				pdfDownloadUrl: flipbooks.pdfDownloadUrl,
-				heyzineId: flipbooks.heyzineId,
 				isVisible: flipbooks.isVisible,
 				isBehindPaywall: flipbooks.isBehindPaywall,
 				price: flipbooks.price,
@@ -170,7 +115,6 @@ export const getAllBooks = cache(async (companyId: string) => {
 			flipbookUrl: book.flipbookUrl,
 			pdfUrl: book.pdfUrl,
 			pdfDownloadUrl: book.pdfDownloadUrl,
-			heyzineId: book.heyzineId,
 			isVisible: book.isVisible,
 			isBehindPaywall: book.isBehindPaywall || false,
 			price: book.price ? parseFloat(book.price) : undefined,
@@ -201,6 +145,7 @@ export async function createBook({
 	showFullScreen,
 	showShareButton,
 	showPrevNextButtons,
+	thumbnailUrl,
 }: {
 	companyId: string;
 	pdfUrl: string; // Public URL of the uploaded PDF
@@ -217,6 +162,7 @@ export async function createBook({
 	showFullScreen?: boolean;
 	showShareButton?: boolean;
 	showPrevNextButtons?: boolean;
+	thumbnailUrl?: string | null;
 }) {
 	try {
 		// Verify user has access to company
@@ -247,18 +193,6 @@ export async function createBook({
 			}
 		}
 		
-		// Call Heyzine API to create flipbook
-		const heyzineResponse = await createHeyzineFlipbook(pdfUrl, {
-			title: title || fileName,
-			subtitle,
-			description,
-			clientId: process.env.HEYZINE_CLIENT_ID || '',
-			allowDownload: allowDownload ?? true,
-			showFullScreen: showFullScreen ?? true,
-			showShareButton: showShareButton ?? true,
-			showPrevNextButtons: showPrevNextButtons ?? true,
-		});
-		
 		// Get the count of existing books to set displayOrder
 		const existingBooks = await db
 			.select({ id: flipbooks.id })
@@ -272,12 +206,16 @@ export async function createBook({
 			await markFreeBookUsed(companyId);
 		}
 		
-		// Save flipbook to database
+		// Generate a unique ID for heyzineId (required by schema, but we're not using Heyzine)
+		// Using a UUID-like format to maintain uniqueness
+		const customId = `custom-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+		
+		// Save flipbook to database (using Supabase PDF URL directly, no Heyzine API call)
 		const [flipbook] = await db
 			.insert(flipbooks)
 			.values({
 				companyId: companyId, // This should match the text type in merchants
-				heyzineId: heyzineResponse.id,
+				heyzineId: customId, // Placeholder ID since we're not using Heyzine
 				pdfUrl: pdfUrl,
 				originalFilename: fileName,
 				fileSizeBytes: fileSizeBytes,
@@ -291,13 +229,11 @@ export async function createBook({
 				showFullScreen: showFullScreen ?? true,
 				showShareButton: showShareButton ?? true,
 				showPrevNextButtons: showPrevNextButtons ?? true,
-				flipbookUrl: heyzineResponse.url,
-				thumbnailUrl: heyzineResponse.thumbnail || null,
-				pdfDownloadUrl: heyzineResponse.pdf || null,
-				numPages: heyzineResponse.meta?.num_pages || null,
-				aspectRatio: heyzineResponse.meta?.aspect_ratio
-					? String(heyzineResponse.meta.aspect_ratio)
-					: null,
+				flipbookUrl: pdfUrl, // Use PDF URL as flipbook URL since we're rendering PDF directly
+				thumbnailUrl: thumbnailUrl || null, // Thumbnail generated from PDF first page
+				pdfDownloadUrl: pdfUrl, // Use the same PDF URL for download
+				numPages: null, // Will be determined by the PDF viewer
+				aspectRatio: null, // Will be determined by the PDF viewer
 				isVisible: true,
 				displayOrder: newDisplayOrder,
 			})
@@ -316,84 +252,7 @@ export async function createBook({
 	}
 }
 
-// Get oEmbed data from Heyzine for a flipbook URL
-export async function getFlipbookEmbed(flipbookUrl: string) {
-	try {
-		// Encode the flipbook URL for the oEmbed API
-		const encodedUrl = encodeURIComponent(flipbookUrl);
-		
-		// Call Heyzine oEmbed API
-		const response = await fetch(
-			`https://heyzine.com/api1/oembed?url=${encodedUrl}&format=json`,
-			{
-				method: 'GET',
-				headers: {
-					'Accept': 'application/json',
-				},
-			}
-		);
-		
-		if (!response.ok) {
-			const errorText = await response.text();
-			console.error('[HEYZINE OEMBED] Error response:', errorText);
-			throw new Error(`Heyzine oEmbed API error: ${response.status} ${response.statusText}`);
-		}
-		
-		const data = await response.json();
-		
-		// Validate response structure
-		if (!data.html) {
-			throw new Error("Invalid response from Heyzine oEmbed API");
-		}
-		
-		return data;
-	} catch (err: unknown) {
-		console.error('[GET FLIPBOOK EMBED] Error while fetching embed:', err);
-		if (err instanceof Error) {
-			throw new Error(`Failed to get flipbook embed: ${err.message}`);
-		}
-		throw new Error("Failed to get flipbook embed");
-	}
-}
-
-// Delete a flipbook from Heyzine
-async function deleteHeyzineFlipbook(heyzineId: string): Promise<void> {
-	const heyzineApiKey = process.env.HEYZINE_API_KEY;
-	
-	if (!heyzineApiKey) {
-		throw new Error("Heyzine API key is not configured");
-	}
-	
-	// Based on Heyzine API documentation pattern, try DELETE endpoint
-	// The API uses flipbook-details for GET, so we'll try DELETE with the id
-	const response = await fetch('https://heyzine.com/api1/flipbook-details', {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${heyzineApiKey}`,
-		},
-		body: JSON.stringify({ id: heyzineId }),
-	});
-	
-	if (!response.ok) {
-		// If DELETE on flipbook-details doesn't work, try alternative endpoint
-		const altResponse = await fetch(`https://heyzine.com/api1/flipbook/${encodeURIComponent(heyzineId)}`, {
-			method: 'DELETE',
-			headers: {
-				'Authorization': `Bearer ${heyzineApiKey}`,
-			},
-		});
-		
-		if (!altResponse.ok) {
-			const errorText = await altResponse.text().catch(() => 'Unknown error');
-			console.error('[HEYZINE DELETE] Error response:', errorText);
-			// Don't throw error - continue with DB deletion even if Heyzine deletion fails
-			console.warn(`Failed to delete flipbook from Heyzine: ${heyzineId}. Continuing with database deletion.`);
-		}
-	}
-}
-
-// Delete a book (from database and Heyzine)
+// Delete a book (from database)
 export async function deleteBook({
 	bookId,
 	companyId,
@@ -405,10 +264,9 @@ export async function deleteBook({
 		// Verify user has access to company
 		await verifyUser(companyId);
 		
-		// Get the book to retrieve heyzineId before deletion
+		// Get the book to verify it belongs to the company
 		const [book] = await db
 			.select({
-				heyzineId: flipbooks.heyzineId,
 				bookCompanyId: flipbooks.companyId,
 			})
 			.from(flipbooks)
@@ -422,16 +280,6 @@ export async function deleteBook({
 		// Verify the book belongs to the company
 		if (book.bookCompanyId !== companyId) {
 			throw new Error("Book does not belong to this company");
-		}
-		
-		// Delete from Heyzine first
-		if (book.heyzineId && typeof book.heyzineId === 'string') {
-			try {
-				await deleteHeyzineFlipbook(book.heyzineId);
-			} catch (error) {
-				// Log error but continue with DB deletion
-				console.error('[DELETE BOOK] Error deleting from Heyzine:', error);
-			}
 		}
 		
 		// Delete from database
